@@ -1,0 +1,24 @@
+﻿@page "/";
+
+@inject ColdShineSoft.Services.BasicChatService ChatService;
+
+<PageTitle>Index</PageTitle>
+
+<div class="d-flex flex-column" style="height:100%;overflow:hidden">
+	<div class="flex-auto" style="height:0;overflow:auto">
+		<MessageList Messages="@ChatService.Messages" />
+	</div>
+	<EditForm Model="@ChatService.EditingMessage" Class="d-flex mb-2" OnValidSubmit="Send">
+		<DataAnnotationsValidator/>
+		<MudTextField @bind-Value="ChatService.EditingMessage.Content" Class="flex-1" For="@(()=>ChatService.EditingMessage.Content)"></MudTextField>
+		<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" />
+	</EditForm>
+</div>
+
+@code
+{
+	public async Task<object> Send()
+	{
+		return await this.ChatService.Send();
+	}
+}
