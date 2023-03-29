@@ -1,8 +1,12 @@
-﻿@foreach(Models.Message message in Messages)
+﻿@inject Microsoft.JSInterop.IJSRuntime JsRuntime;
+@using Microsoft.JSInterop;
+
+<div id="MessageContainer" class="flex-auto" style="height:0;overflow:auto">
+@foreach(Models.Message message in Messages)
 {
 	<div class="d-flex mt-2 mb-1">
 		<MudIcon Icon="@LeftIcons[message.Role]" Size="Size.Large" />
-		<div class="flex-1 ml-2">
+		<div class="flex-1 ml-2 mr-2">
 			@if(message.Role==Models.Role.Server)
 			{
 				<MudMarkdown Value="@message.Content" />
@@ -11,17 +15,40 @@
 		</div>
 	</div>
 }
+</div>
 
 @code {
+	System.Collections.ObjectModel.ObservableCollection<Models.Message> _Messages = null!;
 	[Parameter]
-	public System.Collections.Generic.IEnumerable<Models.Message> Messages { get; set; } = null!;
+	public System.Collections.ObjectModel.ObservableCollection<Models.Message> Messages
+	{
+		get
+		{
+			return this._Messages;
+		}
+		set
+		{
+			this._Messages = value;
+			this._Messages.CollectionChanged+=MessagesChanged;
+		}
+	}
 
 	protected static readonly System.Collections.Generic.Dictionary<Models.Role, string> LeftIcons = new Dictionary<Models.Role, string>()
-	{ 
+	{
 		{ Models.Role.Server, Icons.Material.Filled.Computer },
 		{ Models.Role.System, Icons.Material.Filled.SettingsSystemDaydream },
 		{ Models.Role.Assistant, Icons.Material.Filled.PersonPin },
 		{ Models.Role.User, Icons.Material.Filled.PersonPin },
 		{ Models.Role.Error, Icons.Material.Filled.Error },
 	};
+
+	async void MessagesChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		if (e.NewItems?.Count > 0)
+		{
+			await System.Threading.Tasks.Task.Delay(500);	
+			await this.JsRuntime.InvokeVoidAsync("eval","MessageContainer.lastElementChild.scrollIntoView()");
+			//await this.JsRuntime.InvokeVoidAsync("MessageContainer.lastElementChild.scrollIntoView");
+		}
+	}
 }
