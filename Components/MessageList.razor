@@ -1,0 +1,27 @@
+﻿@foreach(Models.Message message in Messages)
+{
+	<div class="d-flex mt-2 mb-1">
+		<MudIcon Icon="@LeftIcons[message.Role]" Size="Size.Large" />
+		<div class="flex-1 ml-2">
+			@if(message.Role==Models.Role.Server)
+			{
+				<MudMarkdown Value="@message.Content" />
+			}
+			else @message.Content
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter]
+	public System.Collections.Generic.IEnumerable<Models.Message> Messages { get; set; } = null!;
+
+	protected static readonly System.Collections.Generic.Dictionary<Models.Role, string> LeftIcons = new Dictionary<Models.Role, string>()
+	{ 
+		{ Models.Role.Server, Icons.Material.Filled.Computer },
+		{ Models.Role.System, Icons.Material.Filled.SettingsSystemDaydream },
+		{ Models.Role.Assistant, Icons.Material.Filled.PersonPin },
+		{ Models.Role.User, Icons.Material.Filled.PersonPin },
+		{ Models.Role.Error, Icons.Material.Filled.Error },
+	};
+}
