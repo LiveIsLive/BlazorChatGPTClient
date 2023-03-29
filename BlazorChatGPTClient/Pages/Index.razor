@@ -2,12 +2,10 @@
 
 @inject ColdShineSoft.Services.BasicChatService ChatService;
 
-<PageTitle>Index</PageTitle>
+<PageTitle>基本对话</PageTitle>
 
-<div class="d-flex flex-column" style="height:100%;overflow:hidden">
-	<div class="flex-auto" style="height:0;overflow:auto">
-		<MessageList Messages="@ChatService.Messages" />
-	</div>
+<div class="d-flex flex-column" style="height:100%">
+	<MessageList Messages="@ChatService.Messages" />
 	<EditForm Model="@ChatService.EditingMessage" Class="d-flex mb-2" OnValidSubmit="Send">
 		<DataAnnotationsValidator/>
 		<MudTextField @bind-Value="ChatService.EditingMessage.Content" Class="flex-1" For="@(()=>ChatService.EditingMessage.Content)"></MudTextField>
