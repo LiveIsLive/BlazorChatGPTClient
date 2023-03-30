@@ -27,5 +27,6 @@
 		this.Loading = true;
 		await this.ChatService.Send();
 		this.Loading = false;
+		this.StateHasChanged();
 	}
 }

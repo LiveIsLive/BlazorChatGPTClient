@@ -8,29 +8,29 @@ using OpenAI.GPT3.Extensions;
 
 //System.Net.Http.HttpClient httpClient = new(new System.Net.Http.HttpClientHandler { Proxy = new System.Net.WebProxy("http://104.27.34.224"), UseProxy = true });
 //var httpResult = await httpClient.GetAsync("https://chat.openai.com/chat");
-//var html=await httpResult.Content.ReadAsStringAsync();
+//var html = await httpResult.Content.ReadAsStringAsync();
 
 //var openAiService = new OpenAI.GPT3.Managers.OpenAIService(new OpenAI.GPT3.OpenAiOptions()
 //{
-//	ApiKey = "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"
+//	ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"]
 //});
 //openAiService.SetDefaultModelId(OpenAI.GPT3.ObjectModels.Models.ChatGpt3_5Turbo);
 
 
 //var completionResult = await openAiService.ChatCompletion.CreateCompletion(new OpenAI.GPT3.ObjectModels.RequestModels.ChatCompletionCreateRequest
 //{
-//    Messages = new List<OpenAI.GPT3.ObjectModels.RequestModels.ChatMessage>
-//    {
-//        OpenAI.GPT3.ObjectModels.RequestModels.ChatMessage.FromUser("请用C#写出一个输出图片的Controller")
-//    }
+//	Messages = new List<OpenAI.GPT3.ObjectModels.RequestModels.ChatMessage>
+//	{
+//		OpenAI.GPT3.ObjectModels.RequestModels.ChatMessage.FromUser("你是谁？")
+//	}
 //});
 //if (completionResult.Successful)
 //{
-//    Console.WriteLine(completionResult.Choices.First().Message.Content);
+//	Console.WriteLine(completionResult.Choices.First().Message.Content);
 //}
 //else
 //{
-//    Console.WriteLine($"{completionResult.Error.Code}: {completionResult.Error.Message}");
+//	Console.WriteLine($"{completionResult.Error.Code}: {completionResult.Error.Message}");
 //}
 //System.Console.ReadKey();
 //return;
@@ -42,7 +42,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 //builder.Services.AddOpenAIService(settings => settings.ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"]);
-builder.Services.AddSingleton<OpenAI.GPT3.Managers.OpenAIService>(new OpenAI.GPT3.Managers.OpenAIService(new OpenAI.GPT3.OpenAiOptions { ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"], DefaultModelId = OpenAI.GPT3.ObjectModels.Models.ChatGpt3_5Turbo }));
+builder.Services.AddSingleton<OpenAI.GPT3.Managers.OpenAIService>(new OpenAI.GPT3.Managers.OpenAIService(new OpenAI.GPT3.OpenAiOptions
+{ ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"]
+, DefaultModelId = builder.Configuration["OpenAIServiceOptions:DefaultModelId"]
+}));
 
 builder.Services.AddMudServices();
 builder.Services.AddMudMarkdownServices();

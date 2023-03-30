@@ -7,14 +7,25 @@ using System.Threading.Tasks;
 
 namespace ColdShineSoft.Services
 {
-	public class BasicChatService : BaseService
+	public class BasicChatService : ChatGPTService
 	{
-		public System.Collections.ObjectModel.ObservableCollection<Models.Message> Messages { get; } = new();
 
-		public Models.Message EditingMessage { get; set; } = new Models.Message { Role = Models.Role.User };
+		public Models.Message EditingMessage
+		{
+			get
+			{
+				return this.EditingMessages[0];
+			}
+			set
+			{
+				this.EditingMessages.Clear();
+				this.EditingMessages.Add(value);
+			}
+		}
 
 		public BasicChatService(OpenAIService openAIService) : base(openAIService)
 		{
+			this.EditingMessage = new Models.Message { Role = Models.Role.User };
 		}
 
 		public async Task<Models.Message> Send(Models.Message message)
@@ -38,9 +49,9 @@ namespace ColdShineSoft.Services
 			return message;
 		}
 
-		public async Task<Models.Message> Send()
+		public override async Task<Models.Message> Send()
 		{
-			Models.Message message = await this.Send(this.EditingMessage);
+			Models.Message message = await base.Send();
 			this.EditingMessage = new Models.Message { Role = Models.Role.User };
 			return message;
 		}
