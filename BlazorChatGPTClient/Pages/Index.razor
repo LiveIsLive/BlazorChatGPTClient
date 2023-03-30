@@ -4,14 +4,19 @@
 
 <PageTitle>基本对话</PageTitle>
 
-<div class="d-flex flex-column" style="height:100%">
-	<MessageList Messages="@ChatService.Messages" />
-	<MudProgressLinear Indeterminate="@Loading" />
-	<EditForm Model="@ChatService.EditingMessage" Class="d-flex mb-2" OnValidSubmit="Send">
-		<MudTextField @bind-Value="ChatService.EditingMessage.Content" Class="flex-1 ml-2" For="@(()=>ChatService.EditingMessage.Content)" Disabled="@Loading" />
-		<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
-	</EditForm>
-</div>
+<MainLayout>
+	<Header>Test</Header>
+	<Body>
+		<div class="d-flex flex-column" style="height:100%">
+			<MessageList Messages="@ChatService.Messages" />
+			<MudProgressLinear Indeterminate="@Loading" />
+			<EditForm Model="@ChatService.EditingMessage" Class="d-flex mb-2" OnValidSubmit="Send">
+				<MudTextField @bind-Value="ChatService.EditingMessage.Content" Class="flex-1 ml-2" For="@(()=>ChatService.EditingMessage.Content)" Disabled="@Loading" />
+				<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+			</EditForm>
+		</div>
+	</Body>
+</MainLayout>
 
 @code
 {
