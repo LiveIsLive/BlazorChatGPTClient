@@ -16,6 +16,7 @@
 	<MudMainContent Class="d-flex flex-column" Style="height:100%">
 		<MudAppBar Elevation="0">
 			<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+			<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" OnClick="()=>SettingVisible=true" />
 			@Header
 			<MudSpacer />
 			<MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
@@ -27,11 +28,24 @@
 	</MudMainContent>
 </MudLayout>
 
+<MudDialog @bind-IsVisible="SettingVisible">
+	<TitleContent>可用参数</TitleContent>
+	<DialogContent>@Setting</DialogContent>
+	<DialogActions>
+		<MudButton OnClick="()=>SettingVisible=false">关闭</MudButton>
+	</DialogActions>
+</MudDialog>
+
 @code {
+	[Parameter]
+	public RenderFragment? Setting { get; set; }
+
 	[Parameter]
 	public RenderFragment? Header { get; set; }
 
 	bool _drawerOpen = true;
+
+	bool SettingVisible;
 
 	void DrawerToggle()
 	{

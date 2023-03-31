@@ -52,7 +52,7 @@ namespace ColdShineSoft.Services
 				message = new Models.Message(Models.Role.Server, completionResult.Choices.First().Message.Content);
 			else
 			{
-				message = new Models.Message(Models.Role.Server, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}");
+				message = new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}");
 			}
 
 			this.Messages.Add(message);

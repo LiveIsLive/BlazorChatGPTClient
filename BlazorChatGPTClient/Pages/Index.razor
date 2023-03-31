@@ -5,7 +5,17 @@
 <PageTitle>基本对话</PageTitle>
 
 <MainLayout>
-	<Header>Test</Header>
+	<Setting>
+		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
+			<MudSelectItem T="string" />
+			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
+			{
+				<MudSelectItem Value="@model.Value">@model.Key</MudSelectItem>
+			}
+		</MudSelect>
+		<MudNumericField @bind-Value="@ChatService.Temperature" Placeholder="Temperature" />
+		<MudTextField @bind-Value="@ChatService.User" Placeholder="User" />
+	</Setting>
 	<Body>
 		<div class="d-flex flex-column" style="height:100%">
 			<MessageList Messages="@ChatService.Messages" />
