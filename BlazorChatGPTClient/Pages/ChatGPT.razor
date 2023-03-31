@@ -1,0 +1,66 @@
+﻿@page "/ChatGPT";
+
+
+@inject ColdShineSoft.Services.ChatGPTService ChatService;
+
+<PageTitle>基本对话</PageTitle>
+
+<MainLayout>
+	<Setting>
+		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
+			<MudSelectItem T="string" />
+			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
+			{
+				<MudSelectItem Value="@model.Value">@model.Key</MudSelectItem>
+			}
+		</MudSelect>
+		<MudNumericField @bind-Value="@ChatService.Temperature" Placeholder="Temperature" />
+		<MudTextField @bind-Value="@ChatService.User" Placeholder="User" />
+	</Setting>
+	<Body>
+		<div class="d-flex flex-column" style="height:100%">
+			<MessageList Messages="@ChatService.Messages" />
+			<MudProgressLinear Indeterminate="@Loading" />
+			<EditForm Model="@ChatService.EditingMessages" OnValidSubmit="Send">
+				<MudDropContainer T="Models.Message" Items="ChatService.EditingMessages" ItemsSelector="@((item,index)=>true)" ItemDropped="OrderMessage">
+					<ChildContent>
+						<MudDropZone T="Models.Message" AllowReorder="true" Identifier="0" Class="d-flex flex-column" />
+					</ChildContent>
+					<ItemRenderer Context="message">
+						<div class="d-flex">
+							<MudSelect @bind-Value="message.Role" Class="flex-grow-0" Style="width:120px;display:block;flex-grow:0">
+								@foreach(Models.Role role in this.ChatService.ChatRoles)
+								{
+									<MudSelectItem Value="role" />
+								}
+							</MudSelect>
+							<MudTextField @bind-Value="message.Content" Class="flex-1 ml-2" For="@(()=>message.Content)" Disabled="@Loading" />
+						</div>
+					</ItemRenderer>
+				</MudDropContainer>
+				<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+			</EditForm>
+		</div>
+	</Body>
+</MainLayout>
+
+@code
+{
+	bool Loading;
+
+	Models.Message[] VirtualItems { get; } = new Models.Message[]{new Models.Message()};
+
+
+	public async void Send()
+	{
+		this.Loading = true;
+		await this.ChatService.Send();
+		this.Loading = false;
+		this.StateHasChanged();
+	}
+
+	void OrderMessage(MudItemDropInfo<Models.Message> dropItem)
+	{
+		this.ChatService.EditingMessages.Move(this.ChatService.EditingMessages.IndexOf(dropItem.Item), dropItem.IndexInZone);
+	}
+}

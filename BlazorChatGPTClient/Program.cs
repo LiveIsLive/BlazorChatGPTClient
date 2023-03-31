@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using MudBlazor.Services;
 using OpenAI.GPT3.Extensions;
+using ColdShineSoft.Services;
 
 
 //System.Net.Http.HttpClient httpClient = new(new System.Net.Http.HttpClientHandler { Proxy = new System.Net.WebProxy("http://104.27.34.224"), UseProxy = true });
@@ -49,7 +50,8 @@ builder.Services.AddSingleton<OpenAI.GPT3.Managers.OpenAIService>(new OpenAI.GPT
 
 builder.Services.AddMudServices();
 builder.Services.AddMudMarkdownServices();
-builder.Services.AddTransient<ColdShineSoft.Services.BasicChatService>();
+//builder.Services.AddTransient<ColdShineSoft.Services.BasicChatService>();
+builder.Services.AddChatGPTServices();
 builder.Services.AddSingleton<WeatherForecastService>();
 
 var app = builder.Build();
