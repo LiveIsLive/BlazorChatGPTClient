@@ -1,48 +1,31 @@
-﻿@page "/fetchdata"
+﻿@page "/fetchdata";
 
-<PageTitle>Weather forecast</PageTitle>
+@inject IDialogService DialogService;
 
-@using BlazorChatGPTClient.Data
-@inject WeatherForecastService ForecastService
 
-<h1>Weather forecast</h1>
+<EditForm Model="@Persons" OnValidSubmit="Send">
+	@foreach(Person person in Persons)
+	{
+		<MudTextField @bind-Value="person.Name" Class="flex-1 ml-2" For="@(()=>person.Name)" />
+	}
+	<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" />
+</EditForm>
 
-<p>This component demonstrates fetching data from a service.</p>
-
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
 
 @code {
-    private WeatherForecast[]? forecasts;
+	class Person
+	{
+		[System.ComponentModel.DataAnnotations.Required]
+		public string Name { get; set; } = null!;
+	}
 
-    protected override async Task OnInitializedAsync()
-    {
-        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
-    }
+	Person[] Persons = new Person[]
+	{
+		new Person(),new Person()
+	};
+
+	void Send()
+	{
+		this.DialogService.ShowMessageBox("Error","Pass！");
+	}
 }
