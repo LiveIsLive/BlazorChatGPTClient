@@ -22,23 +22,30 @@
 			<MessageList Messages="@ChatService.Messages" />
 			<MudProgressLinear Indeterminate="@Loading" />
 			<EditForm Model="@ChatService.EditingMessages" OnValidSubmit="Send">
-				<MudDropContainer T="Models.Message" Items="ChatService.EditingMessages" ItemsSelector="@((item,index)=>true)" ItemDropped="OrderMessage">
+				<MudDropContainer @ref="DropContainer" T="Models.Message" Items="@ChatService.EditingMessages" ItemsSelector="@((item,index)=>true)" ItemDropped="MoveMessage">
 					<ChildContent>
-						<MudDropZone T="Models.Message" AllowReorder="true" Identifier="0" Class="d-flex flex-column" />
+						<MudDropZone T="Models.Message" AllowReorder="true" Identifier="0" />
 					</ChildContent>
 					<ItemRenderer Context="message">
 						<div class="d-flex">
-							<MudSelect @bind-Value="message.Role" Class="flex-grow-0" Style="width:120px;display:block;flex-grow:0">
-								@foreach(Models.Role role in this.ChatService.ChatRoles)
-								{
-									<MudSelectItem Value="role" />
-								}
-							</MudSelect>
+							<div style="width:100px">
+								<MudSelect @bind-Value="message.Role">
+									@foreach(Models.Role role in this.ChatService.ChatRoles)
+									{
+										<MudSelectItem Value="role" />
+									}
+								</MudSelect>
+							</div>
 							<MudTextField @bind-Value="message.Content" Class="flex-1 ml-2" For="@(()=>message.Content)" Disabled="@Loading" />
+							<MudIconButton OnClick="()=>this.RemoveMessage(message)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
 						</div>
 					</ItemRenderer>
 				</MudDropContainer>
-				<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+				<div class="d-flex">
+					<MudIconButton OnClick="AddMessage" Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="delete"></MudIconButton>
+					<div class="flex-1 align-self-center">可拖动调整顺序</div>
+					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+				</div>
 			</EditForm>
 		</div>
 	</Body>
@@ -48,8 +55,9 @@
 {
 	bool Loading;
 
-	Models.Message[] VirtualItems { get; } = new Models.Message[]{new Models.Message()};
+	MudDropContainer<Models.Message> DropContainer;
 
+	Models.Message[] VirtualItems { get; } = new Models.Message[]{new Models.Message()};
 
 	public async void Send()
 	{
@@ -59,8 +67,20 @@
 		this.StateHasChanged();
 	}
 
-	void OrderMessage(MudItemDropInfo<Models.Message> dropItem)
+	void MoveMessage(MudItemDropInfo<Models.Message> dropItem)
 	{
 		this.ChatService.EditingMessages.Move(this.ChatService.EditingMessages.IndexOf(dropItem.Item), dropItem.IndexInZone);
+	}
+
+	void RemoveMessage(Models.Message message)
+	{
+		this.ChatService.EditingMessages.Remove(message);
+		this.DropContainer.Refresh();
+	}
+
+	void AddMessage()
+	{
+		this.ChatService.EditingMessages.Add(new Models.Message { Role = Models.Role.User});
+		this.DropContainer.Refresh();
 	}
 }
