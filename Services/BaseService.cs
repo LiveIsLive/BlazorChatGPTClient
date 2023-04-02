@@ -18,7 +18,7 @@ namespace ColdShineSoft.Services
 			get
 			{
 				if (_ChatRoles == null)
-					_ChatRoles = System.Enum.GetValues<Models.Role>().Where(r => r != Models.Role.Server && r != Models.Role.Error).ToArray();
+					_ChatRoles = new Models.Role[] { Models.Role.System, Models.Role.Assistant, Models.Role.User };
 				return _ChatRoles;
 			}
 		}

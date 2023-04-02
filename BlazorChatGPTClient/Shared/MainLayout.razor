@@ -7,41 +7,11 @@
 <PageTitle>BlazorChatGPTClient</PageTitle>
 
 <MudLayout Style="height:100%">
-	<MudDrawer @bind-Open="_drawerOpen" Elevation="1">
-		<MudDrawerHeader>
-			<MudText Typo="Typo.h6">MudBlazor.Template</MudText>
-		</MudDrawerHeader>
-		<NavMenu />
-	</MudDrawer>
-	<MudMainContent Class="d-flex flex-column" Style="height:100%">
-		<MudAppBar Elevation="0">
-			<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-			<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Inherit" OnClick="()=>SettingVisible=true" />
-			@Header
-			<MudSpacer />
-			<MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
-			<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
-		</MudAppBar>
-		<MudContainer MaxWidth="MaxWidth.Large" Class="flex-1 pl-2 pr-0">
 			@Body
-		</MudContainer>
-	</MudMainContent>
 </MudLayout>
 
-<MudDialog @bind-IsVisible="SettingVisible">
-	<TitleContent>可用参数</TitleContent>
-	<DialogContent>@Setting</DialogContent>
-	<DialogActions>
-		<MudButton OnClick="()=>SettingVisible=false">关闭</MudButton>
-	</DialogActions>
-</MudDialog>
 
 @code {
-	[Parameter]
-	public RenderFragment? Setting { get; set; }
-
-	[Parameter]
-	public RenderFragment? Header { get; set; }
 
 	bool _drawerOpen = true;
 

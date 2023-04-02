@@ -1,19 +1,19 @@
-﻿@page "/";
+﻿@page "/ImageDallE";
 
-@inject ColdShineSoft.Services.BasicChatService ChatService;
+@inject ColdShineSoft.Services.ImageDallEService ChatService;
 
-<PageTitle>基本对话</PageTitle>
+<PageTitle>Image DALL·E</PageTitle>
 
 <MasterPage>
 	<Setting>
-		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
+		<MudSelect @bind-Value="ChatService.Size" Placeholder="图片大小">
 			<MudSelectItem T="string" />
-			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
+			@foreach(KeyValuePair<string,string> size in this.ChatService.Sizes)
 			{
-				<MudSelectItem Value="@model.Value">@model.Key</MudSelectItem>
+				<MudSelectItem Value="@size.Value">@size.Key</MudSelectItem>
 			}
 		</MudSelect>
-		<MudNumericField @bind-Value="@ChatService.Temperature" Placeholder="Temperature" />
+		<MudNumericField @bind-Value="@ChatService.ImageCount" Placeholder="生成数量" Min="1" MaxLength="10" />
 		<MudTextField @bind-Value="@ChatService.User" Placeholder="User" />
 	</Setting>
 	<Body>

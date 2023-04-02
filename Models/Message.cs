@@ -8,7 +8,7 @@ namespace ColdShineSoft.Models
 {
 	public class Message
 	{
-		public Role Role { get; set; }
+		public Role Role { get; set; } = Models.Role.User;
 
 		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入内容")]
 		public string Content { get; set; } = null!;

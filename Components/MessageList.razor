@@ -7,11 +7,18 @@
 	<div class="d-flex mt-2 mb-1">
 		<MudIcon Icon="@LeftIcons[message.Role]" Size="Size.Large" />
 		<div class="flex-1 ml-2 mr-2">
-			@if(message.Role==Models.Role.Server)
+			@switch(message.Role)
 			{
-				<MudMarkdown Value="@message.Content" />
+				case Models.Role.Server:
+					<MudMarkdown Value="@message.Content" />
+					break;
+				case Models.Role.Image:
+					<a target="_blank" href="@message.Content"><img src="@message.Content" style="max-width:100%" /></a>
+					break;
+				default:
+					@message.Content
+					break;
 			}
-			else @message.Content
 		</div>
 	</div>
 }
@@ -36,8 +43,9 @@
 	protected static readonly System.Collections.Generic.Dictionary<Models.Role, string> LeftIcons = new Dictionary<Models.Role, string>()
 	{
 		{ Models.Role.Server, Icons.Material.Filled.Computer },
+		{ Models.Role.Image, Icons.Material.Filled.Computer },
 		{ Models.Role.System, Icons.Material.Filled.SettingsSystemDaydream },
-		{ Models.Role.Assistant, Icons.Material.Filled.PersonPin },
+		{ Models.Role.Assistant, Icons.Material.Filled.AssistantDirection },
 		{ Models.Role.User, Icons.Material.Filled.PersonPin },
 		{ Models.Role.Error, Icons.Material.Filled.Error },
 	};

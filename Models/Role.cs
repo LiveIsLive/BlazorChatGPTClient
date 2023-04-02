@@ -9,6 +9,7 @@ namespace ColdShineSoft.Models
 	public enum Role
 	{
 		Server,
+		Image,
 		System,
 		User,
 		Assistant,
