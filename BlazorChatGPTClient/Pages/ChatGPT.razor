@@ -22,7 +22,8 @@
 			<MessageList Messages="@ChatService.Messages" />
 			<MudProgressLinear Indeterminate="@Loading" />
 			<EditForm Model="@ChatService.EditingMessages" OnValidSubmit="Send">
-				<MudDropContainer @ref="DropContainer" T="Models.Message" Items="@ChatService.EditingMessages" ItemsSelector="@((item,index)=>true)" ItemDropped="MoveMessage">
+				<ObjectGraphDataAnnotationsValidator />
+				<MudDropContainer @ref="DropContainer" T="Models.Message" Items="ChatService.EditingMessages" ItemsSelector="(item,index)=>true" ItemDropped="MoveMessage">
 					<ChildContent>
 						<MudDropZone T="Models.Message" AllowReorder="true" Identifier="0" />
 					</ChildContent>
@@ -37,7 +38,10 @@
 								</MudSelect>
 							</div>
 							<MudTextField @bind-Value="message.Content" Class="flex-1 ml-2" For="@(()=>message.Content)" Disabled="@Loading" />
-							<MudIconButton OnClick="()=>this.RemoveMessage(message)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+							@if(message!=this.ChatService.EditingMessages[0])
+							{
+								<MudIconButton OnClick="()=>this.RemoveMessage(message)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+							}
 						</div>
 					</ItemRenderer>
 				</MudDropContainer>

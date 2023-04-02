@@ -4,6 +4,7 @@
 
 
 <EditForm Model="@Persons" OnValidSubmit="Send">
+	<ObjectGraphDataAnnotationsValidator />
 	@foreach(Person person in Persons)
 	{
 		<MudTextField @bind-Value="person.Name" Class="flex-1 ml-2" For="@(()=>person.Name)" />
