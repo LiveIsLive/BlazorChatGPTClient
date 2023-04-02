@@ -21,6 +21,7 @@
 			<MessageList Messages="@ChatService.Messages" />
 			<MudProgressLinear Indeterminate="@Loading" />
 			<EditForm Model="@ChatService.EditingMessage" Class="d-flex mb-2" OnValidSubmit="Send">
+				<DataAnnotationsValidator />
 				<MudTextField @bind-Value="ChatService.EditingMessage.Content" Class="flex-1 ml-2" For="@(()=>ChatService.EditingMessage.Content)" Disabled="@Loading" />
 				<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
 			</EditForm>
