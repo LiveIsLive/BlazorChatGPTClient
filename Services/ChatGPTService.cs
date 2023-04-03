@@ -31,35 +31,60 @@ namespace ColdShineSoft.Services
 
 		public float? Temperature { get; set; }
 
+		public int? ChoiceCount { get; set; }
+
+		public float? FrequencyPenalty { get; set; }
+
+		public int? MaxTokens { get; set; }
+
+		public float? PresencePenalty { get; set; }
+
+		public string? Stop { get; set; }
+
+		public System.Collections.ObjectModel.ObservableCollection<string> StopAsList { get; } = new();
+
+		public float? TopP { get; set; }
+
 		public ChatGPTService(OpenAI.GPT3.Managers.OpenAIService openAIService) : base(openAIService)
 		{
 		}
 
-		public async Task<Models.Message> Send(System.Collections.Generic.IEnumerable<Models.Message> messages)
+		public async Task<Models.Message[]> Send(System.Collections.Generic.IEnumerable<Models.Message> messages)
 		{
 			foreach (Models.Message m in messages)
 				this.Messages.Add(m);
 
 			var completionResult = await this.OpenAIService.ChatCompletion.CreateCompletion(new OpenAI.GPT3.ObjectModels.RequestModels.ChatCompletionCreateRequest
 			{
-				Messages = messages.Select(m=> new OpenAI.GPT3.ObjectModels.RequestModels.ChatMessage(m.Role.ToString().ToLower(),m.Content)).ToArray(),
+				Messages = messages.Select(m => new OpenAI.GPT3.ObjectModels.RequestModels.ChatMessage(m.Role.ToString().ToLower(), m.Content)).ToArray(),
 				Model = this.Model,
 				Temperature = this.Temperature,
-				User = this.User
+				User = this.User,
+				N = this.ChoiceCount,
+				FrequencyPenalty = this.FrequencyPenalty,
+				MaxTokens = this.MaxTokens,
+				PresencePenalty = this.PresencePenalty,
+				Stop = this.Stop,
+				StopAsList = this.StopAsList.Count == 0 ? null : this.StopAsList,
+				TopP = this.TopP
 			});
-			Models.Message message;
+
 			if (completionResult.Successful)
-				message = new Models.Message(Models.Role.Server, completionResult.Choices.First().Message.Content);
+            {
+				messages = completionResult.Choices.Select(c=> new Models.Message(Models.Role.Server, c.Message.Content)).ToArray();
+				foreach (Models.Message m in messages)
+					this.Messages.Add(m);
+				return (Models.Message[])messages;
+            }
 			else
 			{
-				message = new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}");
+				Models.Message message = new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}");
+				this.Messages.Add(message);
+				return new Models.Message[] { message };
 			}
-
-			this.Messages.Add(message);
-			return message;
 		}
 
-		public virtual async Task<Models.Message> Send()
+		public virtual async Task<Models.Message[]> Send()
 		{
 			return await this.Send(this.EditingMessages);
 		}
