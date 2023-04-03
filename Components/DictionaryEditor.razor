@@ -1,0 +1,65 @@
+﻿<MudButton OnClick="Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Style="text-transform:none">@Text</MudButton>
+
+@foreach(DictionaryItem item in this.Items)
+{
+	<div class="d-flex">
+		<MudTextField T="string" Text="@item.Key" TextChanged="v=>this.ChangeKey(item,v)" Placeholder="Key" Class="flex-1" />
+		<span>:</span>
+		<MudTextField T="string" Text="@item.Value" TextChanged="v=>this.ChangeValue(item,v)" Placeholder="Value" Class="flex-1" />
+		<MudIconButton OnClick="()=>this.Remove(item)" Icon="@Icons.Material.Filled.Delete"></MudIconButton>
+	</div>
+}
+
+
+@code {
+	[Parameter]
+	public string Text { get; set; } = null!;
+
+	protected System.Collections.ObjectModel.ObservableCollection<DictionaryItem> Items = new();
+
+	private System.Collections.Generic.IDictionary<string, string> _Dictionary = null!;
+	[Parameter]
+	public System.Collections.Generic.IDictionary<string,string> Dictionary
+	{
+		get
+		{
+			return this._Dictionary;
+		}
+		set
+		{
+			this._Dictionary = value;
+			this.Items = new(value.Select(i => new DictionaryItem { Key = i.Key, Value=i.Value }));
+		}
+	}
+
+	void Add()
+	{
+		this.Items.Add(new DictionaryItem());
+		this.Dictionary.Add("","");
+	}
+
+	void Remove(DictionaryItem item)
+	{
+		this.Items.Remove(item);
+		this.Dictionary.Remove(item.Key);
+	}
+
+	void ChangeKey(DictionaryItem item,string key)
+	{
+		this.Dictionary.Remove(item.Key);
+		item.Key = key;
+		this.Dictionary.Add(item.Key, item.Value);
+	}
+
+	void ChangeValue(DictionaryItem item,string value)
+	{
+		item.Value = value;
+		this.Dictionary[item.Key] = value;
+	}
+
+	protected class DictionaryItem
+	{
+		public string Key = "";
+		public string Value = "";
+	}
+}

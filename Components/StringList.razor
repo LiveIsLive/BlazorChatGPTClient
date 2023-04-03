@@ -1,4 +1,4 @@
-﻿<MudButton OnClick="Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">@Text</MudButton>
+﻿<MudButton OnClick="Add" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Style="text-transform:none">@Text</MudButton>
 
 @for(int i=0;i<this.List.Count;i++)
 {
@@ -16,12 +16,12 @@
 	[Parameter]
 	public System.Collections.Generic.IList<string> List { get; set; } = null!;
 
-	public void Add()
+	void Add()
 	{
 		this.List.Add("");
 	}
 
-	public void Remove(int index)
+	void Remove(int index)
 	{
 		this.List.RemoveAt(index);
 		//this.StateHasChanged();
