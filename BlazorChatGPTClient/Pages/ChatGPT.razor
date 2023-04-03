@@ -11,11 +11,18 @@
 			<MudSelectItem T="string" />
 			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
 			{
-				<MudSelectItem Value="@model.Value">@model.Key</MudSelectItem>
+				<MudSelectItem Value="model.Value">@model.Key</MudSelectItem>
 			}
 		</MudSelect>
-		<MudNumericField @bind-Value="@ChatService.Temperature" Placeholder="Temperature" />
-		<MudTextField @bind-Value="@ChatService.User" Placeholder="User" />
+		<MudNumericField @bind-Value="ChatService.Temperature" Placeholder="Temperature" Min="0" Max="2" />
+		<MudTextField @bind-Value="ChatService.User" Placeholder="User" />
+		<MudNumericField @bind-Value="ChatService.ChoiceCount" Placeholder="答案数量" />
+		<MudNumericField @bind-Value="ChatService.FrequencyPenalty" Placeholder="FrequencyPenalty" Min="-0.2F" Max="0.2F" />
+		<MudNumericField @bind-Value="ChatService.MaxTokens" Placeholder="MaxTokens" />
+		<MudNumericField @bind-Value="ChatService.PresencePenalty" Placeholder="PresencePenalty" Min="-0.2F" Max="0.2F" />
+		<MudTextField @bind-Value="ChatService.Stop" Placeholder="Stop" />
+		<StringList List="ChatService.StopAsList" Text="StopAsList" />
+		<MudNumericField @bind-Value="ChatService.TopP" Placeholder="TopP" />
 	</Setting>
 	<Body>
 		<div class="d-flex flex-column" style="height:100%">
@@ -40,13 +47,13 @@
 							<MudTextField @bind-Value="message.Content" Class="flex-1 ml-2" For="@(()=>message.Content)" Disabled="@Loading" />
 							@if(message!=this.ChatService.EditingMessages[0])
 							{
-								<MudIconButton OnClick="()=>this.RemoveMessage(message)" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton>
+								<MudIconButton OnClick="()=>this.RemoveMessage(message)" Icon="@Icons.Material.Filled.Delete"></MudIconButton>
 							}
 						</div>
 					</ItemRenderer>
 				</MudDropContainer>
 				<div class="d-flex">
-					<MudIconButton OnClick="AddMessage" Icon="@Icons.Material.Filled.Add" Color="Color.Primary" aria-label="delete"></MudIconButton>
+					<MudIconButton OnClick="AddMessage" Icon="@Icons.Material.Filled.Add" Color="Color.Primary"></MudIconButton>
 					<div class="flex-1 align-self-center">可拖动调整顺序</div>
 					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
 				</div>
@@ -59,7 +66,7 @@
 {
 	bool Loading;
 
-	MudDropContainer<Models.Message> DropContainer;
+	protected MudDropContainer<Models.Message> DropContainer=null!;
 
 	Models.Message[] VirtualItems { get; } = new Models.Message[]{new Models.Message()};
 
