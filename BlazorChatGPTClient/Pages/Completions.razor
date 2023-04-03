@@ -6,15 +6,29 @@
 
 <MasterPage>
 	<Setting>
-		<MudSelect @bind-Value="ChatService.Size" Placeholder="图片大小">
+		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
 			<MudSelectItem T="string" />
-			@foreach(KeyValuePair<string,string> size in this.ChatService.Sizes)
+			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
 			{
-				<MudSelectItem Value="@size.Value">@size.Key</MudSelectItem>
+				<MudSelectItem Value="model.Value">@model.Key</MudSelectItem>
 			}
 		</MudSelect>
-		<MudNumericField @bind-Value="@ChatService.ImageCount" Placeholder="生成数量" Min="1" MaxLength="10" />
-		<MudTextField @bind-Value="@ChatService.User" Placeholder="User" />
+		<MudNumericField @bind-Value="ChatService.Temperature" Placeholder="Temperature" Min="0" Max="2" />
+		<MudTextField @bind-Value="ChatService.User" Placeholder="User" />
+		<MudNumericField @bind-Value="ChatService.ChoiceCount" Placeholder="答案数量" />
+		<MudNumericField @bind-Value="ChatService.FrequencyPenalty" Placeholder="FrequencyPenalty" Min="-0.2F" Max="0.2F" />
+		<MudNumericField @bind-Value="ChatService.MaxTokens" Placeholder="MaxTokens" />
+		<MudNumericField @bind-Value="ChatService.PresencePenalty" Placeholder="PresencePenalty" Min="-0.2F" Max="0.2F" />
+		<MudTextField @bind-Value="ChatService.Stop" Placeholder="Stop" />
+		<StringList List="ChatService.StopAsList" Text="StopAsList" />
+		<MudNumericField @bind-Value="ChatService.TopP" Placeholder="TopP" />
+
+		<MudNumericField @bind-Value="ChatService.BestOf" Placeholder="BestOf" />
+		<MudCheckBox @bind-Checked="ChatService.Echo" TriState="true">Echo</MudCheckBox>
+		<DictionaryEditor Dictionary="ChatService.LogitBias" Text="LogitBias" />
+		<MudNumericField @bind-Value="ChatService.LogProbs" Placeholder="LogProbs" />
+		<StringList List="ChatService.PromptAsList" Text="PromptAsList" />
+		<MudTextField @bind-Value="ChatService.Suffix" Placeholder="Suffix" />
 	</Setting>
 	<Body>
 		<div class="d-flex flex-column" style="height:100%">

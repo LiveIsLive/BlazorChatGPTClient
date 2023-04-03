@@ -9,15 +9,39 @@ namespace ColdShineSoft.Services
 {
 	public class CompletionsService : BaseService
 	{
-		public System.Collections.Generic.KeyValuePair<string, string>[] Sizes { get; } = typeof(OpenAI.GPT3.ObjectModels.StaticValues.ImageStatics.Size).GetProperties().Select(p => new KeyValuePair<string, string>(p.Name, p.GetValue(null)?.ToString()!)).ToArray();
-
-		public int? ImageCount { get; set; }
-
-		public string? Size { get; set; }
-
 		public System.Collections.ObjectModel.ObservableCollection<Models.Message> Messages { get; } = new();
 
 		public Models.Message EditingMessage { get; protected set; } = new Models.Message { Content= "Once upon a time" };
+
+		public string Model { get; set; } = OpenAI.GPT3.ObjectModels.Models.TextDavinciV3;
+
+		public float? Temperature { get; set; }
+
+		public int? ChoiceCount { get; set; }
+
+		public float? FrequencyPenalty { get; set; }
+
+		public int? MaxTokens { get; set; }
+
+		public float? PresencePenalty { get; set; }
+
+		public string? Stop { get; set; }
+
+		public System.Collections.ObjectModel.ObservableCollection<string> StopAsList { get; } = new();
+
+		public float? TopP { get; set; }
+
+		public int? BestOf { get; set; }
+
+		public bool? Echo { get; set; }
+
+		public System.Collections.Generic.Dictionary<string,string> LogitBias { get; } = new();
+
+		public int? LogProbs { get; set; }
+
+		public System.Collections.ObjectModel.ObservableCollection<string> PromptAsList { get; } = new();
+
+		public string? Suffix { get; set; }
 
 		public CompletionsService(OpenAIService openAIService) : base(openAIService)
 		{
@@ -30,7 +54,23 @@ namespace ColdShineSoft.Services
 			var completionResult = await this.OpenAIService.Completions.CreateCompletion(new OpenAI.GPT3.ObjectModels.RequestModels.CompletionCreateRequest()
 			{
 				Prompt = message.Content,
-				Model = OpenAI.GPT3.ObjectModels.Models.TextDavinciV3
+				Model = this.Model,
+				Temperature = this.Temperature,
+				User = this.User,
+				N = this.ChoiceCount,
+				FrequencyPenalty = this.FrequencyPenalty,
+				MaxTokens = this.MaxTokens,
+				PresencePenalty = this.PresencePenalty,
+				Stop = this.Stop,
+				StopAsList = this.StopAsList.Count == 0 ? null : this.StopAsList,
+				TopP = this.TopP,
+
+				BestOf=this.BestOf,
+				Echo=this.Echo,
+				LogitBias= this.LogitBias.Count == 0 ? null : this.LogitBias,
+				LogProbs=this.LogProbs,
+				PromptAsList= this.PromptAsList.Count == 0 ? null : this.PromptAsList,
+				Suffix=null
 			});
 
 			if (completionResult.Successful)
