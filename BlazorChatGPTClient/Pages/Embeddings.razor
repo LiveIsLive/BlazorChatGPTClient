@@ -1,0 +1,87 @@
+﻿@page "/Embeddings";
+
+
+@inject ColdShineSoft.Services.EmbeddingsService ChatService;
+
+<PageTitle>Embeddings</PageTitle>
+
+<MasterPage>
+	<Setting>
+		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
+			<MudSelectItem T="string" />
+			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
+			{
+				<MudSelectItem Value="model.Value">@model.Key</MudSelectItem>
+			}
+		</MudSelect>
+		<MudTextField @bind-Value="ChatService.Input" Placeholder="Input" />
+	</Setting>
+	<Body>
+		<div class="d-flex flex-column" style="height:100%">
+			<MessageList Messages="@ChatService.Messages" />
+			<MudProgressLinear Indeterminate="@Loading" />
+			<EditForm Model="@ChatService.EditingMessages" OnValidSubmit="Send">
+				<ObjectGraphDataAnnotationsValidator />
+				<MudDropContainer @ref="DropContainer" T="ColdShineSoft.Models.Message" Items="ChatService.EditingMessages" ItemsSelector="(item,index)=>true" ItemDropped="MoveMessage">
+					<ChildContent>
+						<MudDropZone T="ColdShineSoft.Models.Message" AllowReorder="true" Identifier="0" ItemIsDisabled="(v)=>!this.AllowGrag" />
+					</ChildContent>
+					<ItemRenderer Context="message">
+						<div class="d-flex">
+							<MudTextField @bind-Value="message.Content" Class="flex-1 ml-2" For="@(()=>message.Content)" Disabled="@Loading" />
+							@if(message==this.ChatService.EditingMessages[0])
+							{
+								<MudIconButton OnClick="AddMessage" Icon="@Icons.Material.Filled.Add" Color="Color.Primary"></MudIconButton>
+							}
+							else
+							{
+								<MudIconButton OnClick="()=>this.RemoveMessage(message)" Icon="@Icons.Material.Filled.Delete"></MudIconButton>
+							}
+						</div>
+					</ItemRenderer>
+				</MudDropContainer>
+				<div class="d-flex">
+					<MudCheckBox @bind-Checked="AllowGrag" Class="align-self-center">拖动调整顺序</MudCheckBox>
+					<div class="flex-1"></div>
+					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+				</div>
+			</EditForm>
+		</div>
+	</Body>
+</MasterPage>
+
+@code
+{
+	bool Loading;
+
+	bool AllowGrag;
+
+	protected MudDropContainer<ColdShineSoft.Models.Message> DropContainer=null!;
+
+	ColdShineSoft.Models.Message[] VirtualItems { get; } = new ColdShineSoft.Models.Message[]{new ColdShineSoft.Models.Message()};
+
+	public async void Send()
+	{
+		this.Loading = true;
+		await this.ChatService.Send();
+		this.Loading = false;
+		this.StateHasChanged();
+	}
+
+	void MoveMessage(MudItemDropInfo<ColdShineSoft.Models.Message> dropItem)
+	{
+		this.ChatService.EditingMessages.Move(this.ChatService.EditingMessages.IndexOf(dropItem.Item), dropItem.IndexInZone);
+	}
+
+	void RemoveMessage(ColdShineSoft.Models.Message message)
+	{
+		this.ChatService.EditingMessages.Remove(message);
+		this.DropContainer.Refresh();
+	}
+
+	void AddMessage()
+	{
+		this.ChatService.EditingMessages.Add(new ColdShineSoft.Models.Message { Role = ColdShineSoft.Models.Role.User});
+		this.DropContainer.Refresh();
+	}
+}

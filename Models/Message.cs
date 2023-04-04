@@ -19,10 +19,20 @@ namespace ColdShineSoft.Models
 		{
 		}
 
+		public Message(Role role)
+		{
+			this.Role = role;
+		}
+
+		public Message(string content)
+		{
+			this.Content = content;
+		}
+
 		public Message(Role role, string content)
 		{
-			Role = role;
-			Content = content;
+			this.Role = role;
+			this.Content = content;
 		}
 	}
 }

@@ -2,7 +2,7 @@
 
 @inject ColdShineSoft.Services.EditService ChatService;
 
-<PageTitle>Image DALL·E</PageTitle>
+<PageTitle>Edit</PageTitle>
 
 <MasterPage>
 	<Setting>
@@ -23,9 +23,9 @@
 			<MudProgressLinear Indeterminate="Loading" />
 			<EditForm Model="new object[]{ChatService.InputMessage,ChatService.InstructionMessage}" Class="mb-2" OnValidSubmit="Send">
 				<ObjectGraphDataAnnotationsValidator />
-				<MudTextField @bind-Value="ChatService.InputMessage.Content" Class="flex-1 ml-2" For="@(()=>ChatService.InputMessage.Content)" Disabled="@Loading" />
+				<MudTextField @bind-Value="ChatService.InputMessage.Content" For="@(()=>ChatService.InputMessage.Content)" Placeholder="Input" Class="flex-1 ml-2" Disabled="@Loading" />
 				<div class="d-flex">
-					<MudTextField @bind-Value="ChatService.InstructionMessage.Content" Class="flex-1 ml-2" For="@(()=>ChatService.InstructionMessage.Content)" Disabled="@Loading" />
+					<MudTextField @bind-Value="ChatService.InstructionMessage.Content" For="@(()=>ChatService.InstructionMessage.Content)" Placeholder="Instruction" Class="flex-1 ml-2" Disabled="@Loading" />
 					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
 				</div>
 			</EditForm>
