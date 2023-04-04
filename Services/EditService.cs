@@ -46,7 +46,7 @@ namespace ColdShineSoft.Services
 
 			if (completionResult.Successful)
 			{
-				Models.Message[] messages = completionResult.Choices.Select(c => new Models.Message(Models.Role.User, c.Text)).ToArray();
+				Models.Message[] messages = completionResult.Choices.Select(c => new Models.Message(Models.Role.Server, c.Text)).ToArray();
 				foreach (Models.Message m in messages)
 					this.Messages.Add(m);
 				return messages;
