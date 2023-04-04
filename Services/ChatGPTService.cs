@@ -53,7 +53,7 @@ namespace ColdShineSoft.Services
 		{
 		}
 
-		public async Task<Models.Message[]> Send(System.Collections.Generic.IEnumerable<Models.Message> messages)
+		public async Task<bool> Send(System.Collections.Generic.IEnumerable<Models.Message> messages)
 		{
 			foreach (Models.Message m in messages)
 				this.Messages.Add(m);
@@ -74,30 +74,20 @@ namespace ColdShineSoft.Services
 			});
 
 			if (completionResult.Successful)
-            {
-				messages = completionResult.Choices.Select(c=> new Models.Message(Models.Role.Server, c.Message.Content)).ToArray();
-				foreach (Models.Message m in messages)
-					this.Messages.Add(m);
-				return (Models.Message[])messages;
-            }
-			else
-			{
-				Models.Message message = new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}");
-				this.Messages.Add(message);
-				return new Models.Message[] { message };
-			}
+				foreach (OpenAI.GPT3.ObjectModels.SharedModels.ChatChoiceResponse choice in completionResult.Choices)
+					this.Messages.Add(new Models.Message(Models.Role.Server, choice.Message.Content));
+			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
+			return completionResult.Successful;
 		}
 
-		public virtual async Task<Models.Message[]> Send()
+		public virtual async Task<bool> Send()
 		{
-			try
-            {
-				return await this.Send(this.EditingMessages);
-            }
-			finally
-            {
+			if(await this.Send(this.EditingMessages))
+			{
 				this.EditingMessages = new(this.EditingMessages.Select(m => new Models.Message { Role = m.Role }));
+				return true;
             }
+			return false;
 		}
 	}
 }

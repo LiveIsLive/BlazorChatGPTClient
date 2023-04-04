@@ -23,7 +23,7 @@ namespace ColdShineSoft.Services
 		{
 		}
 
-		public async Task<Models.Message[]> Send(Models.Message message)
+		public async Task<bool> Send(Models.Message message)
 		{
 			this.Messages.Add(message);
 
@@ -37,31 +37,21 @@ namespace ColdShineSoft.Services
 			});
 
 			if (imageResult.Successful)
-			{
-				Models.Message[] messages = imageResult.Results.Select(r => new Models.Message(Models.Role.Image, r.Url)).ToArray();
-				foreach (Models.Message m in messages)
-					this.Messages.Add(m);
-				return messages;
-			}
-			else
-			{
-				message = new Models.Message(Models.Role.Error, $"{imageResult.Error?.Code}: {imageResult.Error?.Message}");
-				this.Messages.Add(message);
-				return new Models.Message[] { message };
-			}
+				foreach (OpenAI.GPT3.ObjectModels.ResponseModels.ImageResponseModel.ImageCreateResponse.ImageDataResult result in imageResult.Results)
+					this.Messages.Add(new Models.Message(Models.Role.Image, result.Url));
+			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{imageResult.Error?.Code}: {imageResult.Error?.Message}"));
+			return imageResult.Successful;
 
 		}
 
-		public virtual async Task<Models.Message[]> Send()
+		public virtual async Task<bool> Send()
 		{
-			try
-            {
-				return await this.Send(this.EditingMessage);
-            }
-			finally
-            {
+			if(await this.Send(this.EditingMessage))
+			{
 				this.EditingMessage = new();
+				return true;
             }
+			return false;
 		}
 	}
 }

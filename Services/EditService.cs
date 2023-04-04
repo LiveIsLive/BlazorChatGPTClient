@@ -27,7 +27,7 @@ namespace ColdShineSoft.Services
 		{
 		}
 
-		public async Task<Models.Message[]> Send(Models.Message inputMessage,Models.Message instructionMessage)
+		public async Task<bool> Send(Models.Message inputMessage,Models.Message instructionMessage)
 		{
 			this.Messages.Add(inputMessage);
 			this.Messages.Add(instructionMessage);
@@ -45,31 +45,21 @@ namespace ColdShineSoft.Services
 			});
 
 			if (completionResult.Successful)
-			{
-				Models.Message[] messages = completionResult.Choices.Select(c => new Models.Message(Models.Role.Server, c.Text)).ToArray();
-				foreach (Models.Message m in messages)
-					this.Messages.Add(m);
-				return messages;
-			}
-			else
-			{
-				Models.Message message = new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}");
-				this.Messages.Add(message);
-				return new Models.Message[] { message };
-			}
+				foreach (OpenAI.GPT3.ObjectModels.SharedModels.ChoiceResponse choice in completionResult.Choices)
+					this.Messages.Add(new Models.Message(Models.Role.Server, choice.Text));
+			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
+			return completionResult.Successful;
 		}
 
-		public virtual async Task<Models.Message[]> Send()
+		public virtual async Task<bool> Send()
 		{
-			try
-			{
-				return await this.Send(this.InputMessage, this.InstructionMessage);
-			}
-			finally
-			{
+			if(await this.Send(this.InputMessage, this.InstructionMessage))
+            {
 				this.InputMessage = new() { Role = this.InputMessage.Role };
 				this.InstructionMessage = new() { Role = this.InstructionMessage.Role };
-			}
+				return true;
+            }
+			return false;
 		}
 	}
 }

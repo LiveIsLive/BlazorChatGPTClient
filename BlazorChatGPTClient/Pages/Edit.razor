@@ -37,11 +37,17 @@
 {
 	bool Loading;
 
-	public async void Send()
+	public async Task<bool> Send()
 	{
 		this.Loading = true;
-		await this.ChatService.Send();
-		this.Loading = false;
-		this.StateHasChanged();
+		try
+		{
+			return await this.ChatService.Send();
+		}
+		finally
+		{
+			this.Loading = false;
+			this.StateHasChanged();
+		}
 	}
 }
