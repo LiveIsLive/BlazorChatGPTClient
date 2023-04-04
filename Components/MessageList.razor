@@ -1,7 +1,7 @@
 ﻿@inject Microsoft.JSInterop.IJSRuntime JsRuntime;
 @using Microsoft.JSInterop;
 
-<div id="MessageContainer" class="flex-auto" style="height:0;overflow:auto">
+<div id="MessageContainer" class="flex-1" style="overflow:auto">
 @foreach(Models.Message message in Messages)
 {
 	<div class="d-flex mt-2 mb-1">

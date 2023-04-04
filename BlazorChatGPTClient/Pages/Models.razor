@@ -1,0 +1,37 @@
+﻿@page "/Models";
+
+@inject ColdShineSoft.Services.ModelsService ChatService;
+
+<PageTitle>Image DALL·E</PageTitle>
+
+<MasterPage>
+	<Body>
+		<MudList Style="display:block;height:100%;overflow:auto">
+			<MudListSubheader>All Models</MudListSubheader>
+			@if(this.ChatModels==null)
+			{
+				<MudProgressCircular Size="Size.Large" Indeterminate="true" />
+			}
+			else foreach(string model in this.ChatModels)
+			{
+				<MudListItem>@model</MudListItem>
+			}
+		</MudList>
+	</Body>
+</MasterPage>
+
+@code
+{
+	string[]? ChatModels;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if(firstRender)
+		{
+			this.ChatModels = await this.ChatService.ListAllModels();
+			this.StateHasChanged();
+		}
+
+		await base.OnAfterRenderAsync(firstRender);
+	}
+}
