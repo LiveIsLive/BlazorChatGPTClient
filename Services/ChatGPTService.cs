@@ -25,6 +25,10 @@ namespace ColdShineSoft.Services
 				}
 				return this._EditingMessages;
 			}
+			protected set
+            {
+				this._EditingMessages = value;
+            }
 		}
 
 		public string? Model { get; set; }
@@ -86,7 +90,14 @@ namespace ColdShineSoft.Services
 
 		public virtual async Task<Models.Message[]> Send()
 		{
-			return await this.Send(this.EditingMessages);
+			try
+            {
+				return await this.Send(this.EditingMessages);
+            }
+			finally
+            {
+				this.EditingMessages = new(this.EditingMessages.Select(m => new Models.Message { Role = m.Role }));
+            }
 		}
 	}
 }
