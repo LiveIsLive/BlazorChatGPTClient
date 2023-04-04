@@ -32,7 +32,7 @@
 				<ObjectGraphDataAnnotationsValidator />
 				<MudDropContainer @ref="DropContainer" T="ColdShineSoft.Models.Message" Items="ChatService.EditingMessages" ItemsSelector="(item,index)=>true" ItemDropped="MoveMessage">
 					<ChildContent>
-						<MudDropZone T="ColdShineSoft.Models.Message" AllowReorder="true" Identifier="0" />
+						<MudDropZone T="ColdShineSoft.Models.Message" AllowReorder="true" Identifier="0" ItemIsDisabled="(v)=>!this.AllowGrag" />
 					</ChildContent>
 					<ItemRenderer Context="message">
 						<div class="d-flex">
@@ -45,7 +45,11 @@
 								</MudSelect>
 							</div>
 							<MudTextField @bind-Value="message.Content" Class="flex-1 ml-2" For="@(()=>message.Content)" Disabled="@Loading" />
-							@if(message!=this.ChatService.EditingMessages[0])
+							@if(message==this.ChatService.EditingMessages[0])
+							{
+								<MudIconButton OnClick="AddMessage" Icon="@Icons.Material.Filled.Add" Color="Color.Primary"></MudIconButton>
+							}
+							else
 							{
 								<MudIconButton OnClick="()=>this.RemoveMessage(message)" Icon="@Icons.Material.Filled.Delete"></MudIconButton>
 							}
@@ -53,8 +57,8 @@
 					</ItemRenderer>
 				</MudDropContainer>
 				<div class="d-flex">
-					<MudIconButton OnClick="AddMessage" Icon="@Icons.Material.Filled.Add" Color="Color.Primary"></MudIconButton>
-					<div class="flex-1 align-self-center">可拖动调整顺序</div>
+					<MudCheckBox @bind-Checked="AllowGrag" Class="align-self-center">拖动调整顺序</MudCheckBox>
+					<div class="flex-1"></div>
 					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
 				</div>
 			</EditForm>
@@ -65,6 +69,8 @@
 @code
 {
 	bool Loading;
+
+	bool AllowGrag;
 
 	protected MudDropContainer<ColdShineSoft.Models.Message> DropContainer=null!;
 
