@@ -20,7 +20,7 @@ namespace ColdShineSoft.Services
 		{
 		}
 
-		public async Task<Models.Message[]> Send(System.Collections.Generic.IEnumerable<Models.Message> messages)
+		public async Task<bool> Send(System.Collections.Generic.IEnumerable<Models.Message> messages)
 		{
 			foreach (Models.Message m in messages)
 				this.Messages.Add(m);
@@ -33,30 +33,20 @@ namespace ColdShineSoft.Services
 			});
 
 			if (embeddingResult.Successful)
-            {
-				messages = embeddingResult.Data.Select(d=> new Models.Message(Models.Role.Server, $"{{Index:{d.Index},Embedding:[{string.Join(",",d.Embedding)}]}}")).ToArray();
-				foreach (Models.Message m in messages)
-					this.Messages.Add(m);
-				return (Models.Message[])messages;
-            }
-			else
-			{
-				Models.Message message = new Models.Message(Models.Role.Error, $"{embeddingResult.Error?.Code}: {embeddingResult.Error?.Message}");
-				this.Messages.Add(message);
-				return new Models.Message[] { message };
-			}
+				foreach (OpenAI.GPT3.ObjectModels.ResponseModels.EmbeddingResponse data in embeddingResult.Data)
+					this.Messages.Add(new Models.Message(Models.Role.Server, $"{{Index:{data.Index},Embedding:[{string.Join(",", data.Embedding)}]}}"));
+			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{embeddingResult.Error?.Code}: {embeddingResult.Error?.Message}"));
+			return embeddingResult.Successful;
 		}
 
-		public virtual async Task<Models.Message[]> Send()
+		public virtual async Task<bool> Send()
 		{
-			try
-            {
-				return await this.Send(this.EditingMessages);
-            }
-			finally
+			if(await this.Send(this.EditingMessages))
             {
 				this.EditingMessages = new() { new Models.Message() };
-			}
+				return true;
+            }
+			return false;
 		}
 	}
 }

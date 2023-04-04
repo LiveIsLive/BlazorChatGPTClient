@@ -41,15 +41,9 @@ namespace ColdShineSoft.Services
         {
 			var uploadedFiles = await this.OpenAIService.Files.ListFile();
 			if(uploadedFiles.Successful)
-            {
 				this.UploadedFiles = uploadedFiles.Data;
-				return true;
-            }
-			else
-            {
-				this.LastError = $"{uploadedFiles.Error?.Code}: {uploadedFiles.Error?.Message}";
-				return false;
-            }
+			else this.LastError = $"{uploadedFiles.Error?.Code}: {uploadedFiles.Error?.Message}";
+			return uploadedFiles.Successful;
 		}
 
 	}

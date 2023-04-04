@@ -28,11 +28,14 @@ namespace ColdShineSoft.Services
 			this.EditingMessage = new Models.Message { Role = Models.Role.User };
 		}
 
-		public override async Task<Models.Message[]> Send()
+		public override async Task<bool> Send()
 		{
-			Models.Message[] messages = await base.Send();
-			this.EditingMessage = new Models.Message { Role = Models.Role.User };
-			return messages;
+			if (await base.Send())
+            {
+				this.EditingMessage = new Models.Message { Role = Models.Role.User };
+				return true;
+            }
+			return false;
 		}
 	}
 }
