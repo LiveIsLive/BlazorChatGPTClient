@@ -30,15 +30,15 @@
 			<MudProgressLinear Indeterminate="@Loading" />
 			<EditForm Model="@ChatService.EditingMessages" OnValidSubmit="Send">
 				<ObjectGraphDataAnnotationsValidator />
-				<MudDropContainer @ref="DropContainer" T="Models.Message" Items="ChatService.EditingMessages" ItemsSelector="(item,index)=>true" ItemDropped="MoveMessage">
+				<MudDropContainer @ref="DropContainer" T="ColdShineSoft.Models.Message" Items="ChatService.EditingMessages" ItemsSelector="(item,index)=>true" ItemDropped="MoveMessage">
 					<ChildContent>
-						<MudDropZone T="Models.Message" AllowReorder="true" Identifier="0" />
+						<MudDropZone T="ColdShineSoft.Models.Message" AllowReorder="true" Identifier="0" />
 					</ChildContent>
 					<ItemRenderer Context="message">
 						<div class="d-flex">
 							<div style="width:100px">
 								<MudSelect @bind-Value="message.Role">
-									@foreach(Models.Role role in this.ChatService.ChatRoles)
+									@foreach(ColdShineSoft.Models.Role role in this.ChatService.ChatRoles)
 									{
 										<MudSelectItem Value="role" />
 									}
@@ -66,9 +66,9 @@
 {
 	bool Loading;
 
-	protected MudDropContainer<Models.Message> DropContainer=null!;
+	protected MudDropContainer<ColdShineSoft.Models.Message> DropContainer=null!;
 
-	Models.Message[] VirtualItems { get; } = new Models.Message[]{new Models.Message()};
+	ColdShineSoft.Models.Message[] VirtualItems { get; } = new ColdShineSoft.Models.Message[]{new ColdShineSoft.Models.Message()};
 
 	public async void Send()
 	{
@@ -78,12 +78,12 @@
 		this.StateHasChanged();
 	}
 
-	void MoveMessage(MudItemDropInfo<Models.Message> dropItem)
+	void MoveMessage(MudItemDropInfo<ColdShineSoft.Models.Message> dropItem)
 	{
 		this.ChatService.EditingMessages.Move(this.ChatService.EditingMessages.IndexOf(dropItem.Item), dropItem.IndexInZone);
 	}
 
-	void RemoveMessage(Models.Message message)
+	void RemoveMessage(ColdShineSoft.Models.Message message)
 	{
 		this.ChatService.EditingMessages.Remove(message);
 		this.DropContainer.Refresh();
@@ -91,7 +91,7 @@
 
 	void AddMessage()
 	{
-		this.ChatService.EditingMessages.Add(new Models.Message { Role = Models.Role.User});
+		this.ChatService.EditingMessages.Add(new ColdShineSoft.Models.Message { Role = ColdShineSoft.Models.Role.User});
 		this.DropContainer.Refresh();
 	}
 }
