@@ -1,0 +1,103 @@
+﻿@page "/Files";
+
+@inject ColdShineSoft.Services.FilesService ChatService;
+
+<PageTitle>Models</PageTitle>
+
+<MasterPage>
+	<Body>
+		<div class="d-flex flex-column">
+			<div class="flex-1" style="overflow:auto">
+				<MudTable Items="ChatService.UploadedFiles">
+					<HeaderContent>
+						<MudTh>Id</MudTh>
+						<MudTh>文件名</MudTh>
+						<MudTh>大小(Bytes)</MudTh>
+						<MudTh>目的</MudTh>
+					</HeaderContent>
+					<RowTemplate>
+						<MudTd DataLabel="Id">@context.Id</MudTd>
+						<MudTd DataLabel="File Name">@context.FileName</MudTd>
+						<MudTd DataLabel="大小(Bytes)">@context.Bytes</MudTd>
+						<MudTd DataLabel="目的">@context.Purpose</MudTd>
+					</RowTemplate>
+				</MudTable>
+			</div>
+			@if(this.ChatService.LastError!=null)
+			{
+				<MudAlert Severity="MudBlazor.Severity.Error">@this.ChatService.LastError</MudAlert>
+			}
+			<div>
+				<MudProgressLinear Indeterminate="@Loading" />
+@*				<MudForm Model="this" @ref="@form" Validation="new FileModelFluentValidator().ValidateValue" Class="d-flex">
+				</MudForm>
+*@				<EditForm Model="this" OnValidSubmit="UploadFile" Class="d-flex">
+					<DataAnnotationsValidator />
+					<div style="width:150px">
+						<MudSelect @bind-Value="Purpose">
+							@foreach(OpenAI.GPT3.ObjectModels.UploadFilePurposes.UploadFilePurpose purpose in System.Enum.GetValues<OpenAI.GPT3.ObjectModels.UploadFilePurposes.UploadFilePurpose>())
+							{
+								<MudSelectItem Value="purpose">@purpose</MudSelectItem>
+							}
+						</MudSelect>
+					</div>
+					<MudFileUpload @bind-Files="File" For="()=>this.File" Context="file">
+						<ButtonTemplate>
+							<MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.TabUnselected" for="@file">选择文件</MudButton>
+						</ButtonTemplate>
+					</MudFileUpload>
+					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+				</EditForm>
+			</div>
+		</div>
+	</Body>
+</MasterPage>
+
+@code
+{
+	bool Loading;
+
+	[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入内容")]
+	public IBrowserFile? File { get; set; }
+
+	OpenAI.GPT3.ObjectModels.UploadFilePurposes.UploadFilePurpose Purpose;
+
+	async Task<bool> UploadFile()
+	{
+		this.Loading = true;
+		this.ChatService.FileName = this.File?.Name!;
+
+		System.IO.Stream stream= this.File?.OpenReadStream()!;
+		System.IO.MemoryStream content = new MemoryStream();
+		await stream.CopyToAsync(content);
+		content.Position = 0;
+		this.ChatService.FileContent = content.ToArray();
+		try
+		{
+			if (await this.ChatService.Send())
+				return await this.ChatService.ListFile();
+			return false;
+		}
+		finally
+		{
+			this.Loading = false;
+		}
+	}
+
+	//public class FileModelFluentValidator : AbstractValidator<Files>
+ //   {
+ //       public FileModelFluentValidator()
+ //       {
+ //           RuleFor(x => x.File)
+ //           .NotEmpty().WithMessage("必须选择文件");
+ //       }
+
+ //       public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+ //       {
+ //           var result = await ValidateAsync(ValidationContext<Files>.CreateWithOptions((Files)model, x => x.IncludeProperties(propertyName)));
+ //           if (result.IsValid)
+ //               return Array.Empty<string>();
+ //           return result.Errors.Select(e => e.ErrorMessage);
+ //       };
+ //   }
+}

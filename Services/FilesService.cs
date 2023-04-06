@@ -29,7 +29,10 @@ namespace ColdShineSoft.Services
 			var uploadFilesResponse = await this.OpenAIService.Files.FileUpload(this.FilePurpose, this.FileContent, this.FileName);
 
 			if (uploadFilesResponse.Successful)
-				return await this.ListFile();
+            {
+				this.LastError = null;
+ 				return await this.ListFile();
+           }
 			else
 			{
 				this.LastError = $"{uploadFilesResponse.Error?.Code}: {uploadFilesResponse.Error?.Message}";
@@ -41,9 +44,33 @@ namespace ColdShineSoft.Services
         {
 			var uploadedFiles = await this.OpenAIService.Files.ListFile();
 			if(uploadedFiles.Successful)
+            {
 				this.UploadedFiles = uploadedFiles.Data;
+				this.LastError = null;
+            }
 			else this.LastError = $"{uploadedFiles.Error?.Code}: {uploadedFiles.Error?.Message}";
 			return uploadedFiles.Successful;
+		}
+
+		//public async Task<bool> RetrieveFile(OpenAI.GPT3.ObjectModels.SharedModels.FileResponse file)
+  //      {
+		//	var retrieveFileResponse = await this.OpenAIService.Files.RetrieveFile(file.Id);
+
+		//	if (retrieveFileResponse.Successful)
+		//	{
+		//		// Congrats
+		//	}
+		//	return retrieveFileResponse.Successful;
+		//}
+
+		public async Task<bool> DeleteFile(OpenAI.GPT3.ObjectModels.SharedModels.FileResponse file)
+        {
+			var deleteResponse = await this.OpenAIService.Files.DeleteFile(file.Id);
+
+			if (deleteResponse.Successful)
+				this.LastError = null;
+			else this.LastError = $"{deleteResponse.Error?.Code}: {deleteResponse.Error?.Message}";
+			return deleteResponse.Successful;
 		}
 
 	}
