@@ -18,9 +18,9 @@
 	</Setting>
 	<Body>
 		<div class="d-flex flex-column" style="height:100%">
-			<MessageList Messages="@ChatService.Messages" />
-			<MudProgressLinear Indeterminate="@Loading" />
-			<EditForm Model="@ChatService.EditingMessages" OnValidSubmit="Send">
+			<MessageList Messages="ChatService.Messages" />
+			<MudProgressLinear Indeterminate="Loading" />
+			<EditForm Model="ChatService.EditingMessages" OnValidSubmit="Send">
 				<ObjectGraphDataAnnotationsValidator />
 				<MudDropContainer @ref="DropContainer" T="ColdShineSoft.Models.Message" Items="ChatService.EditingMessages" ItemsSelector="(item,index)=>true" ItemDropped="MoveMessage">
 					<ChildContent>
@@ -28,7 +28,7 @@
 					</ChildContent>
 					<ItemRenderer Context="message">
 						<div class="d-flex">
-							<MudTextField @bind-Value="message.Content" Class="flex-1 ml-2" For="@(()=>message.Content)" Disabled="@Loading" />
+							<MudTextField @bind-Value="message.Content" Class="flex-1 ml-2" For="()=>message.Content" Disabled="Loading" />
 							@if(message==this.ChatService.EditingMessages[0])
 							{
 								<MudIconButton OnClick="AddMessage" Icon="@Icons.Material.Filled.Add" Color="Color.Primary"></MudIconButton>

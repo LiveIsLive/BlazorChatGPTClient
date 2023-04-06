@@ -24,14 +24,10 @@
 {
 	string[]? ChatModels;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+	protected override async Task OnInitializedAsync()
 	{
-		if(firstRender)
-		{
-			this.ChatModels = await this.ChatService.ListAllModels();
-			this.StateHasChanged();
-		}
-
-		await base.OnAfterRenderAsync(firstRender);
+		this.ChatModels = await this.ChatService.ListAllModels();
+		this.StateHasChanged();
+		await base.OnInitializedAsync();
 	}
 }
