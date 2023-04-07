@@ -16,7 +16,7 @@ namespace ColdShineSoft.Services
 
 		public string FileId { get; set; } = null!;
 
-		public string Model { get; set; } = OpenAI.GPT3.ObjectModels.Models.Ada;
+		//public string Model { get; set; } = OpenAI.GPT3.ObjectModels.Models.Ada;
 
 		public FineTunesService(OpenAIService openAIService) : base(openAIService)
 		{
@@ -27,7 +27,7 @@ namespace ColdShineSoft.Services
 			var createFineTuneResponse = await this.OpenAIService.FineTunes.CreateFineTune(new OpenAI.GPT3.ObjectModels.RequestModels.FineTuneCreateRequest()
 			{
 				TrainingFile = fileId,
-				Model = this.Model
+				Model = OpenAI.GPT3.ObjectModels.Models.Ada
 			});
 
 			var listFineTuneEventsStream = await this.OpenAIService.FineTunes.ListFineTuneEvents(createFineTuneResponse.Id, true);

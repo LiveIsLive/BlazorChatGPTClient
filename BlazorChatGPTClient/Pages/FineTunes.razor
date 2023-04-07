@@ -1,0 +1,53 @@
+﻿@*@page "/Edit";
+
+@inject ColdShineSoft.Services.EditService ChatService;
+
+<PageTitle>Edit</PageTitle>
+
+<MasterPage>
+	<Setting>
+		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
+			<MudSelectItem T="string" />
+			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
+			{
+				<MudSelectItem Value="@model.Value">@model.Key</MudSelectItem>
+			}
+		</MudSelect>
+		<MudNumericField @bind-Value="@ChatService.Temperature" Placeholder="Temperature" Min="0" Max="2" />
+		<MudNumericField @bind-Value="ChatService.ChoiceCount" Placeholder="答案数量" />
+		<MudNumericField @bind-Value="ChatService.TopP" Placeholder="TopP" />
+	</Setting>
+	<Body>
+		<div class="d-flex flex-column" style="height:100%">
+			<MessageList Messages="ChatService.Messages" />
+			<MudProgressLinear Indeterminate="Loading" />
+			<EditForm Model="new object[]{ChatService.InputMessage,ChatService.InstructionMessage}" Class="mb-2" OnValidSubmit="Send">
+				<ObjectGraphDataAnnotationsValidator />
+				<MudTextField @bind-Value="ChatService.InputMessage.Content" For="@(()=>ChatService.InputMessage.Content)" Placeholder="Input" Class="flex-1 ml-2" Disabled="@Loading" />
+				<div class="d-flex">
+					<MudTextField @bind-Value="ChatService.InstructionMessage.Content" For="@(()=>ChatService.InstructionMessage.Content)" Placeholder="Instruction" Class="flex-1 ml-2" Disabled="@Loading" />
+					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+				</div>
+			</EditForm>
+		</div>
+	</Body>
+</MasterPage>
+
+@code
+{
+	bool Loading;
+
+	public async Task<bool> Send()
+	{
+		this.Loading = true;
+		try
+		{
+			return await this.ChatService.Send();
+		}
+		finally
+		{
+			this.Loading = false;
+			this.StateHasChanged();
+		}
+	}
+}*@
