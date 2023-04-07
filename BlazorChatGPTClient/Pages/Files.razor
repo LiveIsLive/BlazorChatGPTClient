@@ -1,25 +1,30 @@
 ﻿@page "/Files";
 
 @inject ColdShineSoft.Services.FilesService ChatService;
+@inject IDialogService DialogService
 
-<PageTitle>Models</PageTitle>
+<PageTitle>Files</PageTitle>
 
 <MasterPage>
 	<Body>
 		<div class="d-flex flex-column">
 			<div class="flex-1" style="overflow:auto">
-				<MudTable Items="ChatService.UploadedFiles">
+				<MudTable Items="ChatService.UploadedFiles" Hover="true">
 					<HeaderContent>
 						<MudTh>Id</MudTh>
 						<MudTh>文件名</MudTh>
 						<MudTh>大小(Bytes)</MudTh>
 						<MudTh>目的</MudTh>
+						<MudTh>操作</MudTh>
 					</HeaderContent>
 					<RowTemplate>
 						<MudTd DataLabel="Id">@context.Id</MudTd>
 						<MudTd DataLabel="File Name">@context.FileName</MudTd>
 						<MudTd DataLabel="大小(Bytes)">@context.Bytes</MudTd>
 						<MudTd DataLabel="目的">@context.Purpose</MudTd>
+						<MudTd DataLabel="目的">
+							<MudIconButton OnClick="()=>this.DeleteFile(context)" Icon="@Icons.Material.Filled.Delete" />
+						</MudTd>
 					</RowTemplate>
 				</MudTable>
 			</div>
@@ -31,20 +36,23 @@
 				<MudProgressLinear Indeterminate="@Loading" />
 @*				<MudForm Model="this" @ref="@form" Validation="new FileModelFluentValidator().ValidateValue" Class="d-flex">
 				</MudForm>
-*@				<EditForm Model="this" OnValidSubmit="UploadFile" Class="d-flex">
+*@				<EditForm Model="this" OnValidSubmit="UploadFile" Class="d-flex align-content-center">
 					<DataAnnotationsValidator />
 					<div style="width:150px">
-						<MudSelect @bind-Value="Purpose">
+						<MudSelect @bind-Value="ChatService.FilePurpose" Disabled="@Loading">
 							@foreach(OpenAI.GPT3.ObjectModels.UploadFilePurposes.UploadFilePurpose purpose in System.Enum.GetValues<OpenAI.GPT3.ObjectModels.UploadFilePurposes.UploadFilePurpose>())
 							{
 								<MudSelectItem Value="purpose">@purpose</MudSelectItem>
 							}
 						</MudSelect>
 					</div>
-					<MudFileUpload @bind-Files="File" For="()=>this.File" Context="file">
+					<MudFileUpload @bind-Files="File" For="()=>this.File" Context="file" Class="align-self-center">
 						<ButtonTemplate>
-							<MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.TabUnselected" for="@file">选择文件</MudButton>
+							<MudButton Disabled="@Loading" HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.TabUnselected" for="@file">选择文件</MudButton>
 						</ButtonTemplate>
+						<SelectedTemplate>
+							<span class="ml-1">@this.File?.Name</span>
+						</SelectedTemplate>
 					</MudFileUpload>
 					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
 				</EditForm>
@@ -60,21 +68,45 @@
 	[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入内容")]
 	public IBrowserFile? File { get; set; }
 
-	OpenAI.GPT3.ObjectModels.UploadFilePurposes.UploadFilePurpose Purpose;
+
+	protected override async Task OnInitializedAsync()
+	{
+		this.Loading = true;
+		await this.ChatService.ListFile();
+		this.Loading = false;
+		await base.OnInitializedAsync();
+	}
 
 	async Task<bool> UploadFile()
 	{
 		this.Loading = true;
 		this.ChatService.FileName = this.File?.Name!;
-
-		System.IO.Stream stream= this.File?.OpenReadStream()!;
-		System.IO.MemoryStream content = new MemoryStream();
-		await stream.CopyToAsync(content);
-		content.Position = 0;
-		this.ChatService.FileContent = content.ToArray();
+		System.IO.MemoryStream stream = new();
+		await this.File?.OpenReadStream().CopyToAsync(stream)!;
+		stream.Position = 0;
+		this.ChatService.FileStream = stream;
 		try
 		{
 			if (await this.ChatService.Send())
+				return await this.ChatService.ListFile();
+			return false;
+		}
+		finally
+		{
+			this.Loading = false;
+		}
+	}
+
+	async Task<bool> DeleteFile(OpenAI.GPT3.ObjectModels.SharedModels.FileResponse file)
+	{
+		if (await this.DialogService.ShowMessageBox("删除确认", $"确实要删除文件“{file.FileName}","确定","取消") != true)
+			return false;
+
+		this.Loading = true;
+		this.StateHasChanged();
+		try
+		{
+			if (await this.ChatService.DeleteFile(file))
 				return await this.ChatService.ListFile();
 			return false;
 		}

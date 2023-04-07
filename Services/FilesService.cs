@@ -15,7 +15,7 @@ namespace ColdShineSoft.Services
 
 		public string FileName { get; set; } = null!;
 
-		public byte[] FileContent { get; set; } = null!;
+		public System.IO.Stream FileStream { get; set; } = null!;
 
 		public List<OpenAI.GPT3.ObjectModels.SharedModels.FileResponse> UploadedFiles { get; protected set; } = new();
 
@@ -26,7 +26,7 @@ namespace ColdShineSoft.Services
 
 		public async Task<bool> Send()
 		{
-			var uploadFilesResponse = await this.OpenAIService.Files.FileUpload(this.FilePurpose, this.FileContent, this.FileName);
+			var uploadFilesResponse = await this.OpenAIService.Files.FileUpload(this.FilePurpose, this.FileStream, this.FileName);
 
 			if (uploadFilesResponse.Successful)
             {
