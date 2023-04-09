@@ -14,7 +14,10 @@ namespace ColdShineSoft.BlazorChatGPTClient.Pages
 
         public async Task<IActionResult> OnGet(string fileId, string fileName)
         {
-            return this.File(System.Text.Encoding.UTF8.GetBytes(await this.FilesService.DownloadFile(fileId)), "application/octet-stream", fileName);
+            KeyValuePair<bool, string> result = await this.FilesService.DownloadFile(fileId);
+            if (result.Key)
+                return this.File(System.Text.Encoding.UTF8.GetBytes(result.Value), "application/octet-stream", fileName);
+            return this.Content(result.Value, "plain/text");
         }
     }
 }

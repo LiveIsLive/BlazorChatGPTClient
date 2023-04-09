@@ -3,11 +3,49 @@
 @inject ColdShineSoft.Services.FineTunesService FineTunesService;
 @inject ColdShineSoft.Services.FilesService FilesService;
 
-<PageTitle>Edit</PageTitle>
+<PageTitle>Fine-tunes</PageTitle>
 
 <MasterPage>
 	<Setting>
-		<MudLink Href="Download?fileId=test&fileName=test.text">Test</MudLink>
+		<MudExpansionPanels MultiExpansion="true">
+			<MudExpansionPanel Text="Fine-tunes">
+				<MudNumericField @bind-Value="FineTunesService.BatchSize" Placeholder="BatchSize" />
+				<StringList List="FineTunesService.ClassificationBetas" Text="ClassificationBetas" />
+				<MudNumericField @bind-Value="FineTunesService.ClassificationNClasses" Placeholder="ClassificationNClasses" />
+				<MudTextField @bind-Value="FineTunesService.ClassificationPositiveClass" Placeholder="ClassificationPositiveClass" />
+				<MudCheckBox @bind-Checked="FineTunesService.ComputeClassificationMetrics" TriState="true">ComputeClassificationMetrics</MudCheckBox>
+				<MudNumericField @bind-Value="FineTunesService.LearningRateMultiplier" Placeholder="LearningRateMultiplier" />
+				<MudNumericField @bind-Value="FineTunesService.NEpochs" Placeholder="NEpochs" />
+				<MudNumericField @bind-Value="FineTunesService.PromptLossWeight" Placeholder="PromptLossWeight" />
+				<MudTextField @bind-Value="FineTunesService.Suffix" Placeholder="Suffix" />
+				<MudTextField @bind-Value="FineTunesService.ValidationFile" Placeholder="ValidationFile" />
+			</MudExpansionPanel>
+			<MudExpansionPanel Text="Completions">
+				<MudSelect @bind-Value="FineTunesService.CompletionsService.Model" Placeholder="Model">
+					<MudSelectItem T="string" />
+					@foreach(KeyValuePair<string,string> model in this.FineTunesService.CompletionsService.ChatModels)
+					{
+						<MudSelectItem Value="model.Value">@model.Key</MudSelectItem>
+					}
+				</MudSelect>
+				<MudNumericField @bind-Value="FineTunesService.CompletionsService.Temperature" Placeholder="Temperature" Min="0" Max="2" />
+				<MudTextField @bind-Value="FineTunesService.CompletionsService.User" Placeholder="User" />
+				<MudNumericField @bind-Value="FineTunesService.CompletionsService.ChoiceCount" Placeholder="答案数量" />
+				<MudNumericField @bind-Value="FineTunesService.CompletionsService.FrequencyPenalty" Placeholder="FrequencyPenalty" Min="-0.2F" Max="0.2F" />
+				<MudNumericField @bind-Value="FineTunesService.CompletionsService.MaxTokens" Placeholder="MaxTokens" />
+				<MudNumericField @bind-Value="FineTunesService.CompletionsService.PresencePenalty" Placeholder="PresencePenalty" Min="-0.2F" Max="0.2F" />
+				<MudTextField @bind-Value="FineTunesService.CompletionsService.Stop" Placeholder="Stop" />
+				<StringList List="FineTunesService.CompletionsService.StopAsList" Text="StopAsList" />
+				<MudNumericField @bind-Value="FineTunesService.CompletionsService.TopP" Placeholder="TopP" />
+
+				<MudNumericField @bind-Value="FineTunesService.CompletionsService.BestOf" Placeholder="BestOf" />
+				<MudCheckBox @bind-Checked="FineTunesService.CompletionsService.Echo" TriState="true">Echo</MudCheckBox>
+				<DictionaryEditor Dictionary="FineTunesService.CompletionsService.LogitBias" Text="LogitBias" />
+				<MudNumericField @bind-Value="FineTunesService.CompletionsService.LogProbs" Placeholder="LogProbs" />
+				<StringList List="FineTunesService.CompletionsService.PromptAsList" Text="PromptAsList" />
+				<MudTextField @bind-Value="FineTunesService.CompletionsService.Suffix" Placeholder="Suffix" />
+			</MudExpansionPanel>
+		</MudExpansionPanels>
 	</Setting>
 	<Body>
 		<div class="d-flex flex-column" style="height:100%">
