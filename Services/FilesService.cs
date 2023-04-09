@@ -63,6 +63,14 @@ namespace ColdShineSoft.Services
 		//	return retrieveFileResponse.Successful;
 		//}
 
+		public async Task<string>DownloadFile(string fileId)
+		{
+			var fileContentResponse = await this.OpenAIService.Files.RetrieveFileContent(fileId);
+			if (fileContentResponse.Successful)
+				return fileContentResponse.Content??"";
+			return $"{fileContentResponse.Error?.Code}: {fileContentResponse.Error?.Message}";
+		}
+
 		public async Task<bool> DeleteFile(OpenAI.GPT3.ObjectModels.SharedModels.FileResponse file)
         {
 			var deleteResponse = await this.OpenAIService.Files.DeleteFile(file.Id);
