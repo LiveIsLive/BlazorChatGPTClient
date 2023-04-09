@@ -22,6 +22,26 @@ namespace ColdShineSoft.Services
 
 		public string Model { get; set; } = OpenAI.GPT3.ObjectModels.Models.Ada;
 
+		public int? BatchSize { get; set; }
+
+		public System.Collections.ObjectModel.ObservableCollection<string> ClassificationBetas { get; set; } = new();
+
+		public int? ClassificationNClasses { get; set; }
+
+		public string? ClassificationPositiveClass { get; set; }
+
+		public bool? ComputeClassificationMetrics { get; set; }
+
+		public float? LearningRateMultiplier { get; set; }
+
+		public int? NEpochs { get; set; }
+
+		public int? PromptLossWeight { get; set; }
+
+		public string? Suffix { get; set; }
+
+		public string? ValidationFile { get; set; }
+
 		public System.Action MessageAdded = null!;
 		protected void OnMessageAdded()
 		{
@@ -40,7 +60,17 @@ namespace ColdShineSoft.Services
 			var createFineTuneResponse = await this.OpenAIService.FineTunes.CreateFineTune(new OpenAI.GPT3.ObjectModels.RequestModels.FineTuneCreateRequest()
 			{
 				TrainingFile = fileId,
-				Model = this.Model
+				Model = this.Model,
+				BatchSize=this.BatchSize,
+				ClassificationBetas = this.ClassificationBetas.Count == 0 ? null : this.ClassificationBetas.ToList(),
+				ClassificationNClasses = this.ClassificationNClasses,
+				ClassificationPositiveClass=this.ClassificationPositiveClass,
+				ComputeClassificationMetrics=this.ComputeClassificationMetrics,
+				LearningRateMultiplier=this.LearningRateMultiplier,
+				NEpochs=this.NEpochs,
+				PromptLossWeight=this.PromptLossWeight,
+				Suffix=this.Suffix,
+				ValidationFile=this.ValidationFile
 			});
 
 			var listFineTuneEventsStream = await this.OpenAIService.FineTunes.ListFineTuneEvents(createFineTuneResponse.Id, true);
