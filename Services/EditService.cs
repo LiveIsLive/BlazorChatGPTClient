@@ -34,8 +34,8 @@ namespace ColdShineSoft.Services
 
 			var completionResult = await this.OpenAIService.Edit.CreateEdit(new OpenAI.GPT3.ObjectModels.RequestModels.EditCreateRequest()
 			{
-				Input = this.InputMessage.Content,
-				Instruction = this.InstructionMessage.Content,
+				Input = inputMessage.Content,
+				Instruction = instructionMessage.Content,
 				Model=this.Model,
 				Temperature = this.Temperature,
 				N = this.ChoiceCount,

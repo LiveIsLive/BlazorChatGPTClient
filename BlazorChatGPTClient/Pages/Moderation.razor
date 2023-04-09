@@ -1,0 +1,48 @@
+﻿@page "/Moderation";
+
+@inject ColdShineSoft.Services.ModerationService ChatService;
+
+<PageTitle>Edit</PageTitle>
+
+<MasterPage>
+	<Setting>
+		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
+			<MudSelectItem T="string" />
+			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
+			{
+				<MudSelectItem Value="@model.Value">@model.Key</MudSelectItem>
+			}
+		</MudSelect>
+		<StringList List="ChatService.InputAsList" Text="InputAsList" />
+	</Setting>
+	<Body>
+		<div class="d-flex flex-column" style="height:100%">
+			<MessageList Messages="ChatService.Messages" />
+			<MudProgressLinear Indeterminate="Loading" />
+			<EditForm Model="ChatService.Message" Class="d-flex mb-2" OnValidSubmit="Send">
+				<DataAnnotationsValidator />
+				<MudTextField @bind-Value="ChatService.Message.Content" For="@(()=>ChatService.Message.Content)" Placeholder="Input" Class="flex-1 ml-2" Disabled="@Loading" />
+				<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+			</EditForm>
+		</div>
+	</Body>
+</MasterPage>
+
+@code
+{
+	bool Loading;
+
+	public async Task<bool> Send()
+	{
+		this.Loading = true;
+		try
+		{
+			return await this.ChatService.Send();
+		}
+		finally
+		{
+			this.Loading = false;
+			this.StateHasChanged();
+		}
+	}
+}

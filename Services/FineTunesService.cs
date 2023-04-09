@@ -24,7 +24,7 @@ namespace ColdShineSoft.Services
 
 		public int? BatchSize { get; set; }
 
-		public System.Collections.ObjectModel.ObservableCollection<string> ClassificationBetas { get; set; } = new();
+		public System.Collections.Generic.List<string> ClassificationBetas { get; set; } = new();
 
 		public int? ClassificationNClasses { get; set; }
 
@@ -62,7 +62,7 @@ namespace ColdShineSoft.Services
 				TrainingFile = fileId,
 				Model = this.Model,
 				BatchSize=this.BatchSize,
-				ClassificationBetas = this.ClassificationBetas.Count == 0 ? null : this.ClassificationBetas.ToList(),
+				ClassificationBetas = this.ClassificationBetas.Count == 0 ? null : this.ClassificationBetas,
 				ClassificationNClasses = this.ClassificationNClasses,
 				ClassificationPositiveClass=this.ClassificationPositiveClass,
 				ComputeClassificationMetrics=this.ComputeClassificationMetrics,

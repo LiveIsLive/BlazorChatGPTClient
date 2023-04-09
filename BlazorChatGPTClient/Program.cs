@@ -58,11 +58,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
-{
 	app.UseExceptionHandler("/Error");
-	System.Console.Write("IsDevelopment");
-}
-else System.Console.Write("IsProduction");
 
 
 app.UseStaticFiles();
