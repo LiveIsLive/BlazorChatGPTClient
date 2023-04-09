@@ -6,6 +6,7 @@
 
 <MasterPage>
 	<Setting>
+		<MudLink Href="Download?fileId=file-IoZr3hzDnsicqY7i1dPnkbrV&fileName=compiled_results.csv">Test</MudLink>
 		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
 			<MudSelectItem T="string" />
 			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)

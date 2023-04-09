@@ -1,31 +1,28 @@
-﻿@*@page "/Edit";
+﻿@page "/FineTunes";
 
-@inject ColdShineSoft.Services.EditService ChatService;
+@inject ColdShineSoft.Services.FineTunesService FineTunesService;
+@inject ColdShineSoft.Services.FilesService FilesService;
 
 <PageTitle>Edit</PageTitle>
 
 <MasterPage>
 	<Setting>
-		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
-			<MudSelectItem T="string" />
-			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
-			{
-				<MudSelectItem Value="@model.Value">@model.Key</MudSelectItem>
-			}
-		</MudSelect>
-		<MudNumericField @bind-Value="@ChatService.Temperature" Placeholder="Temperature" Min="0" Max="2" />
-		<MudNumericField @bind-Value="ChatService.ChoiceCount" Placeholder="答案数量" />
-		<MudNumericField @bind-Value="ChatService.TopP" Placeholder="TopP" />
+		<MudLink Href="Download?fileId=test&fileName=test.text">Test</MudLink>
 	</Setting>
 	<Body>
 		<div class="d-flex flex-column" style="height:100%">
-			<MessageList Messages="ChatService.Messages" />
+			<MessageList Messages="FineTunesService.Messages" />
 			<MudProgressLinear Indeterminate="Loading" />
-			<EditForm Model="new object[]{ChatService.InputMessage,ChatService.InstructionMessage}" Class="mb-2" OnValidSubmit="Send">
-				<ObjectGraphDataAnnotationsValidator />
-				<MudTextField @bind-Value="ChatService.InputMessage.Content" For="@(()=>ChatService.InputMessage.Content)" Placeholder="Input" Class="flex-1 ml-2" Disabled="@Loading" />
-				<div class="d-flex">
-					<MudTextField @bind-Value="ChatService.InstructionMessage.Content" For="@(()=>ChatService.InstructionMessage.Content)" Placeholder="Instruction" Class="flex-1 ml-2" Disabled="@Loading" />
+			<EditForm Model="this" Class="mb-2 d-md-flex d-lg-flex d-xl-flex d-xxl-flex" OnValidSubmit="Send">
+				<DataAnnotationsValidator />
+				<MudTextField @bind-Value="Prompt" For="()=>this.Prompt" Placeholder="Prompt" Class="flex-2 ml-2" Disabled="@Loading" />
+				<div class="d-flex flex-1">
+					<MudSelect @bind-Value="FileId" Placeholder="File" For="()=>this.FileId" Disabled="@Loading">
+						@foreach(OpenAI.GPT3.ObjectModels.SharedModels.FileResponse file in this.FilesService.UploadedFiles)
+						{
+							<MudSelectItem Value="file.Id">@file.FileName</MudSelectItem>
+						}
+					</MudSelect>
 					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
 				</div>
 			</EditForm>
@@ -37,12 +34,47 @@
 {
 	bool Loading;
 
+	[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须选择文件")]
+	public string FileId
+	{
+		get
+		{
+			return this.FineTunesService.FileId;
+		}
+		set
+		{
+			this.FineTunesService.FileId = value;
+		}
+	}
+
+	[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入内容")]
+	public string Prompt
+	{
+		get
+		{
+			return this.FineTunesService.Prompt;
+		}
+		set
+		{
+			this.FineTunesService.Prompt = value;
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		this.FineTunesService.MessageAdded = () => this.StateHasChanged();
+		this.Loading = true;
+		await this.FilesService.ListFile();
+		this.Loading = false;
+		await base.OnInitializedAsync();
+	}
+
 	public async Task<bool> Send()
 	{
 		this.Loading = true;
 		try
 		{
-			return await this.ChatService.Send();
+			return await this.FineTunesService.Send();
 		}
 		finally
 		{
@@ -50,4 +82,4 @@
 			this.StateHasChanged();
 		}
 	}
-}*@
+}
