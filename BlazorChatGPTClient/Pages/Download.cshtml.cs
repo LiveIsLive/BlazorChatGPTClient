@@ -17,7 +17,7 @@ namespace ColdShineSoft.BlazorChatGPTClient.Pages
             KeyValuePair<bool, string> result = await this.FilesService.DownloadFile(fileId);
             if (result.Key)
                 return this.File(System.Text.Encoding.UTF8.GetBytes(result.Value), "application/octet-stream", fileName);
-            return this.Content(result.Value, "plain/text");
+            return this.Content(result.Value, "text/plain");
         }
     }
 }
