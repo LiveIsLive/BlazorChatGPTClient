@@ -1,12 +1,18 @@
 ﻿@page "/";
 
 @inject ColdShineSoft.Services.BasicChatService ChatService;
+@inject IHttpContextAccessor HttpContext;
 
 <PageTitle>基本对话</PageTitle>
 
 <MasterPage>
 	<Setting>
-		<MudLink Href="Download?fileId=file-IoZr3hzDnsicqY7i1dPnkbrV&fileName=compiled_results.csv">Test</MudLink>
+		<form action="Login" method="post">
+
+			<input name="userName" />
+			<input name="password" />
+			<input type="submit" />
+		</form>
 		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
 			<MudSelectItem T="string" />
 			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
