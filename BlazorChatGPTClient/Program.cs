@@ -54,6 +54,19 @@ builder.Services.AddMudMarkdownServices();
 builder.Services.AddChatGPTServices();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+#region BLAZOR COOKIE Auth
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+	options.CheckConsentNeeded = context => true;
+	options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<HttpContextAccessor>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<HttpClient>();
+#endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -67,5 +80,12 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+#region BLAZOR COOKIE Auth
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseCookiePolicy();
+app.UseAuthentication();
+#endregion
 
 app.Run();
