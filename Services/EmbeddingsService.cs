@@ -34,8 +34,8 @@ namespace ColdShineSoft.Services
 
 			if (embeddingResult.Successful)
 				foreach (OpenAI.GPT3.ObjectModels.ResponseModels.EmbeddingResponse data in embeddingResult.Data)
-					this.Messages.Add(new Models.Message(Models.Role.Server, $"{{Index:{data.Index},Embedding:[{string.Join(",", data.Embedding)}]}}"));
-			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{embeddingResult.Error?.Code}: {embeddingResult.Error?.Message}"));
+					this.Messages.Add(new Models.Message(Models.MessageRole.Server, $"{{Index:{data.Index},Embedding:[{string.Join(",", data.Embedding)}]}}"));
+			else this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{embeddingResult.Error?.Code}: {embeddingResult.Error?.Message}"));
 			return embeddingResult.Successful;
 		}
 

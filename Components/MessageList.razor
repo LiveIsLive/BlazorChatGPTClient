@@ -9,10 +9,10 @@
 		<div class="flex-1 ml-2 mr-2">
 			@switch(message.Role)
 			{
-				case Models.Role.Server:
+				case Models.MessageRole.Server:
 					<MudMarkdown Value="@message.Content" />
 					break;
-				case Models.Role.Image:
+				case Models.MessageRole.Image:
 					<a target="_blank" href="@message.Content"><img src="@message.Content" style="max-width:100%" /></a>
 					break;
 				default:
@@ -40,14 +40,14 @@
 		}
 	}
 
-	protected static readonly System.Collections.Generic.Dictionary<Models.Role, string> LeftIcons = new Dictionary<Models.Role, string>()
+	protected static readonly System.Collections.Generic.Dictionary<Models.MessageRole, string> LeftIcons = new Dictionary<Models.MessageRole, string>()
 	{
-		{ Models.Role.Server, Icons.Material.Filled.Computer },
-		{ Models.Role.Image, Icons.Material.Filled.Computer },
-		{ Models.Role.System, Icons.Material.Filled.SettingsSystemDaydream },
-		{ Models.Role.Assistant, Icons.Material.Filled.AssistantDirection },
-		{ Models.Role.User, Icons.Material.Filled.PersonPin },
-		{ Models.Role.Error, Icons.Material.Filled.Error },
+		{ Models.MessageRole.Server, Icons.Material.Filled.Computer },
+		{ Models.MessageRole.Image, Icons.Material.Filled.Computer },
+		{ Models.MessageRole.System, Icons.Material.Filled.SettingsSystemDaydream },
+		{ Models.MessageRole.Assistant, Icons.Material.Filled.AssistantDirection },
+		{ Models.MessageRole.User, Icons.Material.Filled.PersonPin },
+		{ Models.MessageRole.Error, Icons.Material.Filled.Error },
 	};
 
 	async void MessagesChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

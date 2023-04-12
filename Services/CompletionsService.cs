@@ -75,8 +75,8 @@ namespace ColdShineSoft.Services
 
 			if (completionResult.Successful)
 				foreach (OpenAI.GPT3.ObjectModels.SharedModels.ChoiceResponse choice in completionResult.Choices)
-					this.Messages.Add(new Models.Message(Models.Role.User, choice.Text));
-			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
+					this.Messages.Add(new Models.Message(Models.MessageRole.User, choice.Text));
+			else this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
 			return completionResult.Successful;
 		}
 

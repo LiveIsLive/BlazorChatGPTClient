@@ -38,7 +38,7 @@
 						<div class="d-flex">
 							<div style="width:100px">
 								<MudSelect @bind-Value="message.Role">
-									@foreach(ColdShineSoft.Models.Role role in this.ChatService.ChatRoles)
+									@foreach(ColdShineSoft.Models.MessageRole role in this.ChatService.ChatRoles)
 									{
 										<MudSelectItem Value="role" />
 									}
@@ -103,7 +103,7 @@
 
 	void AddMessage()
 	{
-		this.ChatService.EditingMessages.Add(new ColdShineSoft.Models.Message { Role = ColdShineSoft.Models.Role.User});
+		this.ChatService.EditingMessages.Add(new ColdShineSoft.Models.Message { Role = ColdShineSoft.Models.MessageRole.User});
 		this.DropContainer.Refresh();
 	}
 }

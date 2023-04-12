@@ -38,8 +38,8 @@ namespace ColdShineSoft.Services
 
 			if (imageResult.Successful)
 				foreach (OpenAI.GPT3.ObjectModels.ResponseModels.ImageResponseModel.ImageCreateResponse.ImageDataResult result in imageResult.Results)
-					this.Messages.Add(new Models.Message(Models.Role.Image, result.Url));
-			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{imageResult.Error?.Code}: {imageResult.Error?.Message}"));
+					this.Messages.Add(new Models.Message(Models.MessageRole.Image, result.Url));
+			else this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{imageResult.Error?.Code}: {imageResult.Error?.Message}"));
 			return imageResult.Successful;
 
 		}

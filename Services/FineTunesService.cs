@@ -75,7 +75,7 @@ namespace ColdShineSoft.Services
 
 			var listFineTuneEventsStream = await this.OpenAIService.FineTunes.ListFineTuneEvents(createFineTuneResponse.Id, true);
 			using var streamReader = new StreamReader(listFineTuneEventsStream);
-			this.Messages.Add(new Models.Message(Models.Role.Server, (await streamReader.ReadToEndAsync())));
+			this.Messages.Add(new Models.Message(Models.MessageRole.Server, (await streamReader.ReadToEndAsync())));
 			this.OnMessageAdded();
 
 			OpenAI.GPT3.ObjectModels.ResponseModels.FineTuneResponseModels.FineTuneResponse retrieveFineTuneResponse;
@@ -84,12 +84,12 @@ namespace ColdShineSoft.Services
 				retrieveFineTuneResponse = await this.OpenAIService.FineTunes.RetrieveFineTune(createFineTuneResponse.Id);
 				if (retrieveFineTuneResponse.Status == "succeeded" || retrieveFineTuneResponse.Status == "cancelled" || retrieveFineTuneResponse.Status == "failed")
 				{
-					this.Messages.Add(new Models.Message(Models.Role.Server, $"Fine-tune Status for {createFineTuneResponse.Id}: {retrieveFineTuneResponse.Status}."));
+					this.Messages.Add(new Models.Message(Models.MessageRole.Server, $"Fine-tune Status for {createFineTuneResponse.Id}: {retrieveFineTuneResponse.Status}."));
 					this.OnMessageAdded();
 					break;
 				}
 
-				this.Messages.Add(new Models.Message(Models.Role.Server, $"Fine-tune Status for {createFineTuneResponse.Id}: {retrieveFineTuneResponse.Status}. Wait 10 more seconds"));
+				this.Messages.Add(new Models.Message(Models.MessageRole.Server, $"Fine-tune Status for {createFineTuneResponse.Id}: {retrieveFineTuneResponse.Status}. Wait 10 more seconds"));
 				this.OnMessageAdded();
 				await Task.Delay(10_000);
 			} while (true);
