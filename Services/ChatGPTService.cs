@@ -18,10 +18,10 @@ namespace ColdShineSoft.Services
 				if(this._EditingMessages==null)
 				{
 					this._EditingMessages = new();
-					this._EditingMessages.Add(new Models.Message(Models.Role.System,"You are a helpful assistant."));
-					this._EditingMessages.Add(new Models.Message(Models.Role.User, "Who won the world series in 2020?"));
-					this._EditingMessages.Add(new Models.Message(Models.Role.Assistant, "The Los Angeles Dodgers won the World Series in 2020."));
-					this._EditingMessages.Add(new Models.Message(Models.Role.User, "Where was it played?"));
+					this._EditingMessages.Add(new Models.Message(Models.MessageRole.System,"You are a helpful assistant."));
+					this._EditingMessages.Add(new Models.Message(Models.MessageRole.User, "Who won the world series in 2020?"));
+					this._EditingMessages.Add(new Models.Message(Models.MessageRole.Assistant, "The Los Angeles Dodgers won the World Series in 2020."));
+					this._EditingMessages.Add(new Models.Message(Models.MessageRole.User, "Where was it played?"));
 				}
 				return this._EditingMessages;
 			}
@@ -75,8 +75,8 @@ namespace ColdShineSoft.Services
 
 			if (completionResult.Successful)
 				foreach (OpenAI.GPT3.ObjectModels.SharedModels.ChatChoiceResponse choice in completionResult.Choices)
-					this.Messages.Add(new Models.Message(Models.Role.Server, choice.Message.Content));
-			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
+					this.Messages.Add(new Models.Message(Models.MessageRole.Server, choice.Message.Content));
+			else this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
 			return completionResult.Successful;
 		}
 

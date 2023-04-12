@@ -11,7 +11,7 @@ namespace ColdShineSoft.Services
 	{
 		public System.Collections.ObjectModel.ObservableCollection<Models.Message> Messages { get; } = new();
 
-		public Models.Message InputMessage { get; protected set; } = new Models.Message(Models.Role.Assistant, "What day of the wek is it?");
+		public Models.Message InputMessage { get; protected set; } = new Models.Message(Models.MessageRole.Assistant, "What day of the wek is it?");
 
 		public Models.Message InstructionMessage { get; protected set; } = new Models.Message { Content = "Fix the spelling mistakes" };
 
@@ -46,8 +46,8 @@ namespace ColdShineSoft.Services
 
 			if (completionResult.Successful)
 				foreach (OpenAI.GPT3.ObjectModels.SharedModels.ChoiceResponse choice in completionResult.Choices)
-					this.Messages.Add(new Models.Message(Models.Role.Server, choice.Text));
-			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
+					this.Messages.Add(new Models.Message(Models.MessageRole.Server, choice.Text));
+			else this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
 			return completionResult.Successful;
 		}
 

@@ -8,7 +8,7 @@ namespace ColdShineSoft.Models
 {
 	public class Message
 	{
-		public Role Role { get; set; } = Models.Role.User;
+		public MessageRole Role { get; set; } = Models.MessageRole.User;
 
 		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入内容")]
 		public string Content { get; set; } = null!;
@@ -19,7 +19,7 @@ namespace ColdShineSoft.Models
 		{
 		}
 
-		public Message(Role role)
+		public Message(MessageRole role)
 		{
 			this.Role = role;
 		}
@@ -29,7 +29,7 @@ namespace ColdShineSoft.Models
 			this.Content = content;
 		}
 
-		public Message(Role role, string content)
+		public Message(MessageRole role, string content)
 		{
 			this.Role = role;
 			this.Content = content;

@@ -25,14 +25,14 @@ namespace ColdShineSoft.Services
 
 		public BasicChatService(OpenAIService openAIService) : base(openAIService)
 		{
-			this.EditingMessage = new Models.Message { Role = Models.Role.User };
+			this.EditingMessage = new Models.Message { Role = Models.MessageRole.User };
 		}
 
 		public override async Task<bool> Send()
 		{
 			if (await base.Send())
             {
-				this.EditingMessage = new Models.Message { Role = Models.Role.User };
+				this.EditingMessage = new Models.Message { Role = Models.MessageRole.User };
 				return true;
             }
 			return false;

@@ -48,6 +48,16 @@ builder.Services.AddSingleton<OpenAI.GPT3.Managers.OpenAIService>(new OpenAI.GPT
 , DefaultModelId = builder.Configuration["OpenAIServiceOptions:DefaultModelId"]
 }));
 
+LiteDB.LiteDatabase database = new LiteDB.LiteDatabase(System.IO.Path.Combine(builder.Environment.ContentRootPath, "Data.db"));
+database.Mapper.EnumAsInteger = true;
+builder.Services.AddSingleton<LiteDB.ILiteDatabase>(new LiteDB.LiteDatabase(System.IO.Path.Combine(builder.Environment.ContentRootPath, "Data.db")));
+
+//var collection = database.GetCollection<ColdShineSoft.Models.User>();
+//collection.EnsureIndex(u => u.UserId, true);
+//collection.EnsureIndex(u => u.UserName, true);
+//collection.Insert(new ColdShineSoft.Models.User { Role = ColdShineSoft.Models.UserRole.¹ÜÀíÔ±, UserName = "a", Password = System.BitConverter.ToString(System.Security.Cryptography.MD5.Create().ComputeHash(System.Text.Encoding.UTF8.GetBytes("0"))).Replace("-", "") });
+//var u=collection.FindOne(u => u.UserName == "a");
+
 builder.Services.AddMudServices();
 builder.Services.AddMudMarkdownServices();
 //builder.Services.AddTransient<ColdShineSoft.Services.BasicChatService>();

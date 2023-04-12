@@ -11,7 +11,7 @@ namespace ColdShineSoft.Services
 	{
 		public System.Collections.ObjectModel.ObservableCollection<Models.Message> Messages { get; } = new();
 
-		public Models.Message Message { get; protected set; } = new Models.Message(Models.Role.Assistant, "I want to kill them.");
+		public Models.Message Message { get; protected set; } = new Models.Message(Models.MessageRole.Assistant, "I want to kill them.");
 
 		public string? Model { get; set; }
 
@@ -34,8 +34,8 @@ namespace ColdShineSoft.Services
 
 			if (moderationResponse.Successful)
 				foreach (OpenAI.GPT3.ObjectModels.ResponseModels.Result result in moderationResponse.Results)
-					this.Messages.Add(new Models.Message(Models.Role.Server, System.Text.Json.JsonSerializer.Serialize(result)));
-			else this.Messages.Add(new Models.Message(Models.Role.Error, $"{moderationResponse.Error?.Code}: {moderationResponse.Error?.Message}"));
+					this.Messages.Add(new Models.Message(Models.MessageRole.Server, System.Text.Json.JsonSerializer.Serialize(result)));
+			else this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{moderationResponse.Error?.Code}: {moderationResponse.Error?.Message}"));
 			return moderationResponse.Successful;
 		}
 

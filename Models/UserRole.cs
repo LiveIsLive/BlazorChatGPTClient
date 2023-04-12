@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace ColdShineSoft.Models
 {
-	public enum Role
+	public enum UserRole
 	{
-		Server,
-		Image,
-		System,
-		User,
-		Assistant,
-		Error
+		普通用户,
+		管理员
 	}
 }
