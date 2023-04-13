@@ -1,0 +1,106 @@
+﻿@page "/User";
+
+@inject ColdShineSoft.Services.UserService UserService;
+@inject IDialogService DialogService;
+
+<PageTitle>Models</PageTitle>
+
+<MasterPage>
+	<Header>
+		<MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.Start" OnClick="Add" />
+	</Header>
+	<Body>
+		<MudTable Items="List" Hover="true" Breakpoint="Breakpoint.Xs">
+			<HeaderContent>
+				<MudTh>用户名</MudTh>
+				<MudTh>角色</MudTh>
+				<MudTh>操作</MudTh>
+			</HeaderContent>
+			<RowTemplate>
+				<MudTd DataLabel="用户名">@context.UserName</MudTd>
+				<MudTd DataLabel="角色">@context.Role</MudTd>
+				<MudTd DataLabel="操作">
+					<MudIconButton OnClick="()=>this.Edit(context)" Icon="@Icons.Material.Filled.Edit" />
+					<MudIconButton OnClick="()=>this.Delete(context)" Icon="@Icons.Material.Filled.Delete" />
+				</MudTd>
+			</RowTemplate>
+		</MudTable>
+	</Body>
+</MasterPage>
+
+<MudDialog @bind-IsVisible="Editing">
+	<TitleContent>用户信息</TitleContent>
+	<DialogContent>
+		<EditForm Model="EditUser" @ref="Form">
+			<DataAnnotationsValidator />
+			<MudTextField @bind-Value="EditUser.UserName" For="()=>EditUser.UserName" Label="用户名" />
+			<MudTextField InputType="InputType.Password" @bind-Value="EditUser.Password" For="()=>EditUser.Password" Label="密码" MaxLength="30" />
+			<MudSelect @bind-Value="EditUser.Role" Label="角色">
+				@foreach(ColdShineSoft.Models.UserRole role in System.Enum.GetValues<ColdShineSoft.Models.UserRole>())
+				{
+					<MudSelectItem Value="role" />
+				}
+			</MudSelect>
+		</EditForm>
+	</DialogContent>
+	<DialogActions>
+		<MudButton OnClick="Save">确定</MudButton>
+		<MudButton OnClick="()=>Editing=false">关闭</MudButton>
+	</DialogActions>
+</MudDialog>
+
+@code
+{
+	EditForm? Form;
+
+	bool Editing;
+
+	//bool newUser;
+
+	ColdShineSoft.Models.User EditUser = new();
+
+	ColdShineSoft.Models.User[]? List;
+
+	protected override async Task OnInitializedAsync()
+	{
+		this.BindList();
+		await base.OnInitializedAsync();
+	}
+
+	protected void BindList()
+	{
+		this.List = this.UserService.List();
+	}
+
+	protected void Add()
+	{
+		//this.newUser = true;
+		this.EditUser = new();
+		this.Editing = true;
+	}
+
+	protected void Edit(ColdShineSoft.Models.User user)
+	{
+		//this.newUser = false;
+		this.EditUser = user;
+		this.Editing = true;
+	}
+
+	protected async Task<bool> Delete(ColdShineSoft.Models.User user)
+	{
+		if (await this.DialogService.ShowMessageBox("删除确认", $"确实要删除用户“{user.UserName}","确定","取消") != true)
+			return false;
+		this.UserService.Delete(user.UserId);
+		this.BindList();
+		return true;
+	}
+
+	protected void Save()
+	{
+		if (this.Form?.EditContext?.Validate()!=true)
+			return;
+		this.UserService.Update(this.EditUser);
+		this.Editing = false;
+		this.BindList();
+	}
+}

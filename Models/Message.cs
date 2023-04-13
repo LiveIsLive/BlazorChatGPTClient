@@ -13,6 +13,7 @@ namespace ColdShineSoft.Models
 		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入内容")]
 		public string Content { get; set; } = null!;
 
+		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入密码")]
 		public System.DateTime Time { get; set; } = System.DateTime.Now;
 
 		public Message()

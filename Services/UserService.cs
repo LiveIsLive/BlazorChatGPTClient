@@ -53,11 +53,14 @@ namespace ColdShineSoft.Services
 
 		public string? Update(Models.User user)
 		{
+			if (this.Users.Exists(u => u.UserId != user.UserId && u.UserName == user.UserName))
+				return $"用户名“{user.UserName}”已经存在！";
+
 			if (user.Password.Length != 32)
 				user.Password = this.MD5(user.Password);
 			if (this.Users.Exists(u => u.UserId == user.UserId))
 				this.Users.Update(user);
-			this.Users.Insert(user);
+			else this.Users.Insert(user);
 			return null;
 		}
 

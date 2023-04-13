@@ -23,7 +23,7 @@
 						<MudTd DataLabel="File Name">@context.FileName</MudTd>
 						<MudTd DataLabel="大小(Bytes)">@context.Bytes</MudTd>
 						<MudTd DataLabel="目的">@context.Purpose</MudTd>
-						<MudTd DataLabel="目的">
+						<MudTd DataLabel="操作">
 							<MudIconButton Target="_blank" Href="@string.Format($"Download?fileId={context.Id}&fileName={context.FileName}")" Icon="@Icons.Material.Filled.FileDownload" />
 							<MudIconButton OnClick="()=>this.DeleteFile(context)" Icon="@Icons.Material.Filled.Delete" />
 						</MudTd>

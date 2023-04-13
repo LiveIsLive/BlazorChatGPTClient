@@ -50,7 +50,7 @@ builder.Services.AddSingleton<OpenAI.GPT3.Managers.OpenAIService>(new OpenAI.GPT
 
 LiteDB.LiteDatabase database = new LiteDB.LiteDatabase(System.IO.Path.Combine(builder.Environment.ContentRootPath, "Data.db"));
 database.Mapper.EnumAsInteger = true;
-builder.Services.AddSingleton<LiteDB.ILiteDatabase>(new LiteDB.LiteDatabase(System.IO.Path.Combine(builder.Environment.ContentRootPath, "Data.db")));
+builder.Services.AddSingleton<LiteDB.ILiteDatabase>(database);
 
 //var collection = database.GetCollection<ColdShineSoft.Models.User>();
 //collection.EnsureIndex(u => u.UserId, true);
