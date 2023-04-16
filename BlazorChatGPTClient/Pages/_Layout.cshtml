@@ -16,6 +16,21 @@
 @*	<link href="BlazorChatGPTClient.styles.css" rel="stylesheet" />
 *@
 
+<script type="text/javascript">
+function Login(userName, password) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', "Login", false); // 同步方式
+	xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({ userName: userName, password: password }));
+	return eval(xhr.responseText);
+}
+function Logout() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', "Logout", false); // 同步方式
+	xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send();
+}
+</script>
 
 	<component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>

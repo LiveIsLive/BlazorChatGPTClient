@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase;
+
+@inject IHttpContextAccessor HttpContextAccessor;
 
 <MudThemeProvider/>
 <MudDialogProvider/>
@@ -7,16 +9,15 @@
 <PageTitle>BlazorChatGPTClient</PageTitle>
 
 <MudLayout Style="height:100%">
-			@Body
+	<div style="position:absolute"><MudButton OnClick="StateHasChanged">Test</MudButton></div>
+	@if(this.HttpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated==true)
+		@Body
+	else
+	{
+		<LoginPage Logined="StateHasChanged" />
+	}
 </MudLayout>
 
 
 @code {
-
-	bool _drawerOpen = true;
-
-	void DrawerToggle()
-	{
-		_drawerOpen = !_drawerOpen;
-	}
 }
