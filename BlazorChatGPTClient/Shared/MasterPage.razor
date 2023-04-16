@@ -1,5 +1,7 @@
-﻿
-<MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+﻿@inject Microsoft.JSInterop.IJSRuntime JsRuntime;
+@using Microsoft.JSInterop;
+
+<MudDrawer @bind-Open="_drawerOpen" Elevation="1" Class="d-flex" Style="height:100%">
 	<MudDrawerHeader>
 		<MudText Typo="Typo.h6">功能选择</MudText>
 	</MudDrawerHeader>
@@ -14,8 +16,11 @@
 		}
 		@Header
 		<MudSpacer />
-		<MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/" Target="_blank" />
-		<MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
+		<MudMenu Icon="@Icons.Material.Filled.Functions" Color="Color.Inherit">
+			<MudMenuItem Href="User" Icon="@Icons.Material.Filled.SupervisedUserCircle">用户管理</MudMenuItem>
+			<MudMenuItem Icon="@Icons.Material.Filled.Login" OnClick="Logout">退出登录</MudMenuItem>
+			<MudMenuItem Icon="@Icons.Material.Filled.ContactPage">关于</MudMenuItem>
+		</MudMenu>
 	</MudAppBar>
 	<MudContainer MaxWidth="MaxWidth.Large" Class="flex-1 pl-2 pr-0" Style="height:100%">
 		@Body
@@ -31,6 +36,9 @@
 </MudDialog>
 
 @code {
+	[Parameter]
+	public EventCallback Logouted { get; set; }
+
 	[Parameter]
 	public RenderFragment? Setting { get; set; }
 
@@ -48,4 +56,12 @@
 	{
 		_drawerOpen = !_drawerOpen;
 	}
+
+
+	async Task Logout()
+	{
+		await this.JsRuntime.InvokeVoidAsync("Logout");
+		await this.Logouted.InvokeAsync();
+	}
+
 }

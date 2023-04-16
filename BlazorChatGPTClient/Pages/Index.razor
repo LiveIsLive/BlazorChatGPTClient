@@ -5,14 +5,8 @@
 
 <PageTitle>基本对话</PageTitle>
 
-<MasterPage>
+<MasterPage Logouted="StateHasChanged">
 	<Setting>
-		<form action="Login" method="post">
-
-			<input name="userName" />
-			<input name="password" />
-			<input type="submit" />
-		</form>
 		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
 			<MudSelectItem T="string" />
 			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)

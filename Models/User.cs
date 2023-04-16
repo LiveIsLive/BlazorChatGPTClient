@@ -26,6 +26,7 @@ namespace ColdShineSoft.Models
 		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入用户名")]
 		public string UserName { get; set; } = null!;
 
+		[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入密码")]
 		public string Password { get; set; } = null!;
 
 		public UserRole Role { get; set; }

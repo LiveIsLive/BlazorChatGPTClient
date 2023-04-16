@@ -1,0 +1,37 @@
+﻿@inject Microsoft.JSInterop.IJSRuntime JsRuntime;
+@using Microsoft.JSInterop;
+@inject IDialogService DialogService;
+
+<div class="d-flex justify-center align-center" style="height:100%">
+	<EditForm Model="User" OnValidSubmit="Login" Style="width:100%;max-width:400px">
+		<DataAnnotationsValidator />
+		<MudCard Class="ma-2">
+			<MudCardHeader>
+				<MudText>登录</MudText>
+			</MudCardHeader>
+			<MudCardContent>
+				<MudTextField Placeholder="用户名" @bind-Value="User.UserName" For="()=>this.User.UserName" />
+				<MudTextField Placeholder="密码" @bind-Value="User.Password" For="()=>this.User.Password" InputType="InputType.Password" />
+			</MudCardContent>
+			<MudCardActions>
+				 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">登录</MudButton>
+			</MudCardActions>
+		</MudCard>
+	</EditForm>
+</div>
+
+@code {
+	[Parameter]
+	public EventCallback Logined { get; set; }
+
+
+	Models.User User = new();
+
+	async Task Login()
+	{
+		string error= await this.JsRuntime.InvokeAsync<string>("Login",this.User.UserName,this.User.Password);
+		if (error == null)
+			await this.Logined.InvokeAsync();
+		else await this.DialogService.ShowMessageBox("登录失败", error);
+	}
+}
