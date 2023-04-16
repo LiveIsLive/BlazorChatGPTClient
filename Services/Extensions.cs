@@ -11,9 +11,16 @@ namespace ColdShineSoft.Services
 	{
 		public static Microsoft.Extensions.DependencyInjection.IServiceCollection AddChatGPTServices(this Microsoft.Extensions.DependencyInjection.IServiceCollection services)
 		{
+			System.Type baseType = typeof(BaseService);
 			foreach (System.Type type in System.Reflection.Assembly.GetExecutingAssembly().GetExportedTypes())
-				if (!type.IsAbstract)
+			{
+				if (type.IsAbstract)
+					continue;
+				if(baseType.IsAssignableFrom(type))
 					services.AddScoped(type);
+			}
+			services.AddScoped<UserService>();
+			services.AddScoped<LoginService>();
 			return services;
 		}
 	}

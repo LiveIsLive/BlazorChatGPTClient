@@ -1,11 +1,10 @@
 ﻿@page "/";
 
 @inject ColdShineSoft.Services.BasicChatService ChatService;
-@inject IHttpContextAccessor HttpContext;
 
 <PageTitle>基本对话</PageTitle>
 
-<MasterPage Logouted="StateHasChanged">
+<MasterPage>
 	<Setting>
 		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
 			<MudSelectItem T="string" />

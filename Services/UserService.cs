@@ -36,14 +36,24 @@ namespace ColdShineSoft.Services
 			return System.BitConverter.ToString(System.Security.Cryptography.MD5.Create().ComputeHash(System.Text.Encoding.UTF8.GetBytes(s))).Replace("-", "");
 		}
 
-		public string? Check(string userName,string password)
+		//public string? Check(string userName,string password)
+		//{
+		//	Models.User user = this.Users.FindOne(u => u.UserName == userName);
+		//	if (user == null)
+		//		return "用户名不正确！";
+		//	if (this.MD5(password) != user.Password)
+		//		return "密码不正确！";
+		//	return null;
+		//}
+
+		public Models.User Check(string userName,string password)
 		{
 			Models.User user = this.Users.FindOne(u => u.UserName == userName);
 			if (user == null)
-				return "用户名不正确！";
+				throw new System.Security.SecurityException("用户名不正确！");
 			if (this.MD5(password) != user.Password)
-				return "密码不正确！";
-			return null;
+				throw new System.Security.SecurityException("密码不正确！");
+			return user;
 		}
 
 		public Models.User[] List()
