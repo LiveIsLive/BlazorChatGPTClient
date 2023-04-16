@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Betalgo.OpenAI.GPT3" Version="6.8.3" />
     <PackageReference Include="LiteDB" Version="5.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.16" />
   </ItemGroup>
 
   <ItemGroup>

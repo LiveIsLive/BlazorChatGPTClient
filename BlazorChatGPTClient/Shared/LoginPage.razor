@@ -1,6 +1,5 @@
-﻿@inject Microsoft.JSInterop.IJSRuntime JsRuntime;
-@using Microsoft.JSInterop;
-@inject IDialogService DialogService;
+﻿@inject IDialogService DialogService;
+@inject ColdShineSoft.Services.LoginService LoginService;
 
 <div class="d-flex justify-center align-center" style="height:100%">
 	<EditForm Model="User" OnValidSubmit="Login" Style="width:100%;max-width:400px">
@@ -21,17 +20,17 @@
 </div>
 
 @code {
-	[Parameter]
-	public EventCallback Logined { get; set; }
+	//[Parameter]
+	//public EventCallback Logined { get; set; }
 
 
 	Models.User User = new();
 
 	async Task Login()
 	{
-		string error= await this.JsRuntime.InvokeAsync<string>("Login",this.User.UserName,this.User.Password);
-		if (error == null)
-			await this.Logined.InvokeAsync();
-		else await this.DialogService.ShowMessageBox("登录失败", error);
+		//string error= await this.JsRuntime.InvokeAsync<string>("Login",this.User.UserName,this.User.Password);
+		string? error= this.LoginService.Login(this.User.UserName,this.User.Password);
+		if (error != null)
+			await this.DialogService.ShowMessageBox("登录失败", error);
 	}
 }

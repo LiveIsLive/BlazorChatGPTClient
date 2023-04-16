@@ -1,5 +1,4 @@
-﻿@inject Microsoft.JSInterop.IJSRuntime JsRuntime;
-@using Microsoft.JSInterop;
+﻿@inject ColdShineSoft.Services.LoginService LoginService;
 
 <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Class="d-flex" Style="height:100%">
 	<MudDrawerHeader>
@@ -36,8 +35,6 @@
 </MudDialog>
 
 @code {
-	[Parameter]
-	public EventCallback Logouted { get; set; }
 
 	[Parameter]
 	public RenderFragment? Setting { get; set; }
@@ -58,10 +55,9 @@
 	}
 
 
-	async Task Logout()
+	void Logout()
 	{
-		await this.JsRuntime.InvokeVoidAsync("Logout");
-		await this.Logouted.InvokeAsync();
+		this.LoginService.Logout();
 	}
 
 }

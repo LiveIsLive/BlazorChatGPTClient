@@ -44,8 +44,9 @@ builder.Services.AddServerSideBlazor();
 
 //builder.Services.AddOpenAIService(settings => settings.ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"]);
 builder.Services.AddSingleton<OpenAI.GPT3.Managers.OpenAIService>(new OpenAI.GPT3.Managers.OpenAIService(new OpenAI.GPT3.OpenAiOptions
-{ ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"]
-, DefaultModelId = builder.Configuration["OpenAIServiceOptions:DefaultModelId"]
+{
+	ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"],
+	DefaultModelId = builder.Configuration["OpenAIServiceOptions:DefaultModelId"]
 }));
 
 LiteDB.LiteDatabase database = new LiteDB.LiteDatabase(System.IO.Path.Combine(builder.Environment.ContentRootPath, "Data.db"));
@@ -62,20 +63,20 @@ builder.Services.AddMudServices();
 builder.Services.AddMudMarkdownServices();
 //builder.Services.AddTransient<ColdShineSoft.Services.BasicChatService>();
 builder.Services.AddChatGPTServices();
-builder.Services.AddSingleton<WeatherForecastService>();
 
-#region BLAZOR COOKIE Auth
-builder.Services.Configure<CookiePolicyOptions>(options =>
-{
-	options.CheckConsentNeeded = context => true;
-	options.MinimumSameSitePolicy = SameSiteMode.None;
-});
-builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<HttpContextAccessor>();
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<HttpClient>();
-#endregion
+builder.Services.AddScoped<Microsoft.AspNetCore.Components.Authorization.AuthenticationStateProvider, AuthenticationStateProvider>();
+//#region BLAZOR COOKIE Auth
+//builder.Services.Configure<CookiePolicyOptions>(options =>
+//{
+//	options.CheckConsentNeeded = context => true;
+//	options.MinimumSameSitePolicy = SameSiteMode.None;
+//});
+//builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+//builder.Services.AddHttpContextAccessor();
+//builder.Services.AddScoped<HttpContextAccessor>();
+//builder.Services.AddHttpClient();
+//builder.Services.AddScoped<HttpClient>();
+//#endregion
 
 var app = builder.Build();
 
