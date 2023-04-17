@@ -74,10 +74,21 @@ namespace ColdShineSoft.Services
 			});
 
 			if (completionResult.Successful)
-				foreach (OpenAI.GPT3.ObjectModels.SharedModels.ChatChoiceResponse choice in completionResult.Choices)
+			{
+				if (completionResult.Choices.Count == 0)
+				{
+					this.Messages.Add(new Models.Message(Models.MessageRole.Error, "服务器没有返回数据"));
+					return false;
+				}
+				else foreach (OpenAI.GPT3.ObjectModels.SharedModels.ChatChoiceResponse choice in completionResult.Choices)
 					this.Messages.Add(new Models.Message(Models.MessageRole.Server, choice.Message.Content));
-			else this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
-			return completionResult.Successful;
+				return true;
+			}
+			else
+			{
+				this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{completionResult.Error?.Code}: {completionResult.Error?.Message}"));
+				return false;
+			}
 		}
 
 		public virtual async Task<bool> Send()
@@ -87,6 +98,7 @@ namespace ColdShineSoft.Services
 				this.EditingMessages = new(this.EditingMessages.Select(m => new Models.Message { Role = m.Role }));
 				return true;
             }
+			this.EditingMessages = new System.Collections.ObjectModel.ObservableCollection<Models.Message>(this.EditingMessages.Select(m => new Models.Message(m)));
 			return false;
 		}
 	}
