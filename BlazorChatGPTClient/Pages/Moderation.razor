@@ -19,9 +19,9 @@
 		<div class="d-flex flex-column" style="height:100%">
 			<MessageList Messages="ChatService.Messages" />
 			<MudProgressLinear Indeterminate="Loading" />
-			<EditForm Model="ChatService.Message" Class="d-flex mb-2" OnValidSubmit="Send">
+			<EditForm Model="ChatService.EditingMessage" Class="d-flex mb-2" OnValidSubmit="Send">
 				<DataAnnotationsValidator />
-				<MudTextField @bind-Value="ChatService.Message.Content" For="@(()=>ChatService.Message.Content)" Placeholder="Input" Class="flex-1 ml-2" Disabled="@Loading" />
+				<MudTextField @bind-Value="ChatService.EditingMessage.Content" For="@(()=>ChatService.EditingMessage.Content)" Placeholder="Input" Class="flex-1 ml-2" Disabled="@Loading" />
 				<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
 			</EditForm>
 		</div>

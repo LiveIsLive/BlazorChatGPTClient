@@ -35,6 +35,7 @@ namespace ColdShineSoft.Services
 				this.EditingMessage = new Models.Message { Role = Models.MessageRole.User };
 				return true;
             }
+			this.EditingMessage = new Models.Message(this.EditingMessage);
 			return false;
 		}
 	}

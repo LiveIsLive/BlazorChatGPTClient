@@ -37,11 +37,21 @@ namespace ColdShineSoft.Services
 			});
 
 			if (imageResult.Successful)
+			{
+				if (imageResult.Results.Count == 0)
+				{
+					this.Messages.Add(new Models.Message(Models.MessageRole.Error, "服务器没有返回数据"));
+					return false;
+				}
 				foreach (OpenAI.GPT3.ObjectModels.ResponseModels.ImageResponseModel.ImageCreateResponse.ImageDataResult result in imageResult.Results)
 					this.Messages.Add(new Models.Message(Models.MessageRole.Image, result.Url));
-			else this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{imageResult.Error?.Code}: {imageResult.Error?.Message}"));
-			return imageResult.Successful;
-
+				return true;
+			}
+			else
+			{
+				this.Messages.Add(new Models.Message(Models.MessageRole.Error, $"{imageResult.Error?.Code}: {imageResult.Error?.Message}"));
+				return false;
+			}
 		}
 
 		public virtual async Task<bool> Send()
@@ -51,6 +61,7 @@ namespace ColdShineSoft.Services
 				this.EditingMessage = new();
 				return true;
             }
+			this.EditingMessage = new Models.Message(this.EditingMessage);
 			return false;
 		}
 	}

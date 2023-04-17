@@ -35,5 +35,11 @@ namespace ColdShineSoft.Models
 			this.Role = role;
 			this.Content = content;
 		}
+
+		public Message(Message message)
+		{
+			this.Role = message.Role;
+			this.Content = message.Content;
+		}
 	}
 }
