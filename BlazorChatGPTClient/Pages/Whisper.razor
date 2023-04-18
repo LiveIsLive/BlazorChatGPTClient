@@ -1,0 +1,83 @@
+﻿@page "/Whisper";
+
+@inject ColdShineSoft.Services.WhisperService ChatService;
+
+<PageTitle>Whisper</PageTitle>
+
+<MasterPage>
+	<Setting>
+		<MudSelect @bind-Value="ChatService.Model" Placeholder="Model">
+			<MudSelectItem T="string" />
+			@foreach(KeyValuePair<string,string> model in this.ChatService.ChatModels)
+			{
+				<MudSelectItem Value="model.Value">@model.Key</MudSelectItem>
+			}
+		</MudSelect>
+		<MudNumericField @bind-Value="ChatService.Temperature" Placeholder="Temperature" Min="0" Max="2" />
+	</Setting>
+	<Body>
+		<div class="d-flex flex-column" style="height:100%">
+			<MessageList Messages="ChatService.Messages" />
+			<MudProgressLinear Indeterminate="Loading" />
+			<EditForm Model="this" Class="mb-2 d-flex" OnValidSubmit="Send">
+				<DataAnnotationsValidator />
+				<div style="width:120px">
+					<MudSelect @bind-Value="ChatService.ResponseFormat" Disabled="@Loading">
+						@foreach(KeyValuePair<string,string> format in this.ChatService.ResponseFormats)
+						{
+							<MudSelectItem Value="format.Value">@format.Key</MudSelectItem>
+						}
+					</MudSelect>
+				</div>
+				<MudFileUpload @bind-Files="File" For="()=>this.File" Context="file" Class="align-self-center">
+					<ButtonTemplate>
+						<MudButton Disabled="@Loading" HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.TabUnselected" for="@file">选择文件</MudButton>
+					</ButtonTemplate>
+					<SelectedTemplate>
+						<span class="ml-1">@this.File?.Name</span>
+					</SelectedTemplate>
+				</MudFileUpload>
+				<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+			</EditForm>
+		</div>
+	</Body>
+</MasterPage>
+
+@code
+{
+	bool Loading;
+
+	[System.ComponentModel.DataAnnotations.Required(ErrorMessage = "必须输入内容")]
+	public IBrowserFile? File { get; set; }
+
+	private string _Format=null!;
+	public string Format
+	{
+		get
+		{
+			if (this._Format == null)
+				this._Format = this.ChatService.ResponseFormat;
+			return this._Format;
+		}
+		set
+		{
+			this._Format = value;
+		}
+	}
+
+	public async Task<bool> Send()
+	{
+		this.Loading = true;
+		try
+		{
+			this.ChatService.FileName = this.File?.Name!;
+			this.ChatService.FileStream = this.File?.OpenReadStream(1024*1024*300)!;
+			return await this.ChatService.Send();
+		}
+		finally
+		{
+			this.Loading = false;
+			this.StateHasChanged();
+		}
+	}
+}

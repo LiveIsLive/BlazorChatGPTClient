@@ -1,4 +1,5 @@
 ﻿@inject ColdShineSoft.Services.LoginService LoginService;
+@inject IDialogService DialogService;
 
 <MudDrawer @bind-Open="_drawerOpen" Elevation="1" Class="d-flex" Style="height:100%">
 	<MudDrawerHeader>
@@ -18,7 +19,7 @@
 		<MudMenu Icon="@Icons.Material.Filled.Functions" Color="Color.Inherit">
 			<MudMenuItem Href="User" Icon="@Icons.Material.Filled.SupervisedUserCircle">用户管理</MudMenuItem>
 			<MudMenuItem Icon="@Icons.Material.Filled.Login" OnClick="Logout">退出登录</MudMenuItem>
-			<MudMenuItem Icon="@Icons.Material.Filled.ContactPage">关于</MudMenuItem>
+			<MudMenuItem Icon="@Icons.Material.Filled.ContactPage" OnClick="ShowAboutDialog">关于</MudMenuItem>
 		</MudMenu>
 	</MudAppBar>
 	<MudContainer MaxWidth="MaxWidth.Large" Class="flex-1 pl-2 pr-0" Style="height:100%">
@@ -54,10 +55,13 @@
 		_drawerOpen = !_drawerOpen;
 	}
 
-
 	void Logout()
 	{
 		this.LoginService.Logout();
 	}
 
+	void ShowAboutDialog()
+	{
+		this.DialogService.ShowMessageBox("关于", (MarkupString)"Copyright © <a style=color:blue target=_blank href=https://cold-shine-soft.com/>ColdShineSoft Information Technology Co. , Ltd.</a> All rights reserved");
+	}
 }

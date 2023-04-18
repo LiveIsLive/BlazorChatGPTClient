@@ -26,8 +26,11 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		this.ChatModels = await this.ChatService.ListAllModels();
-		this.StateHasChanged();
+		if (this.ChatModels == null)
+		{
+			this.ChatModels = await this.ChatService.ListAllModels();
+			this.StateHasChanged();
+		}
 		await base.OnInitializedAsync();
 	}
 }
