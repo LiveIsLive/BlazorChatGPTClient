@@ -73,9 +73,12 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		this.Loading = true;
-		await this.ChatService.ListFile();
-		this.Loading = false;
+		if(this.ChatService.UploadedFiles==null)
+		{
+			this.Loading = true;
+			await this.ChatService.ListFile();
+			this.Loading = false;
+		}
 		await base.OnInitializedAsync();
 	}
 
@@ -84,7 +87,7 @@
 		this.Loading = true;
 		this.ChatService.FileName = this.File?.Name!;
 		System.IO.MemoryStream stream = new();
-		await this.File?.OpenReadStream().CopyToAsync(stream)!;
+		await this.File?.OpenReadStream(1024*1024*300).CopyToAsync(stream)!;
 		stream.Position = 0;
 		this.ChatService.FileStream = stream;
 		try
