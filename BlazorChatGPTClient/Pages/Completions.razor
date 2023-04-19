@@ -1,6 +1,7 @@
 ﻿@page "/Completions";
 
 @inject ColdShineSoft.Services.CompletionsService ChatService;
+@inject ColdShineSoft.Services.LoginService LoginService;
 
 <PageTitle>Completions</PageTitle>
 
@@ -59,5 +60,12 @@
 			this.Loading = false;
 			this.StateHasChanged();
 		}
+	}
+
+	protected override void OnInitialized()
+	{
+		if (this.ChatService.User == null)
+			this.ChatService.User = this.LoginService.LoginUser?.UserName;
+		base.OnInitialized();
 	}
 }

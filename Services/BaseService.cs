@@ -10,18 +10,7 @@ namespace ColdShineSoft.Services
 	{
 		protected readonly OpenAI.GPT3.Managers.OpenAIService OpenAIService;
 
-		public string User { get; set; } = null!;
-
-		private static Models.MessageRole[] _ChatRoles = null!;
-		public Models.MessageRole[] ChatRoles
-		{
-			get
-			{
-				if (_ChatRoles == null)
-					_ChatRoles = new Models.MessageRole[] { Models.MessageRole.System, Models.MessageRole.Assistant, Models.MessageRole.User };
-				return _ChatRoles;
-			}
-		}
+		public string? User { get; set; }
 
 		private static System.Collections.Generic.KeyValuePair<string, string>[] _ChatModels = null!;
 		public System.Collections.Generic.KeyValuePair<string, string>[] ChatModels

@@ -1,7 +1,7 @@
 ﻿@page "/ChatGPT";
 
-
 @inject ColdShineSoft.Services.ChatGPTService ChatService;
+@inject ColdShineSoft.Services.LoginService LoginService;
 
 <PageTitle>ChatGPT</PageTitle>
 
@@ -92,7 +92,8 @@
 
 	void MoveMessage(MudItemDropInfo<ColdShineSoft.Models.Message> dropItem)
 	{
-		this.ChatService.EditingMessages.Move(this.ChatService.EditingMessages.IndexOf(dropItem.Item), dropItem.IndexInZone);
+		if(dropItem.Item!=null)
+			this.ChatService.EditingMessages.Move(this.ChatService.EditingMessages.IndexOf(dropItem.Item), dropItem.IndexInZone);
 	}
 
 	void RemoveMessage(ColdShineSoft.Models.Message message)
@@ -105,5 +106,12 @@
 	{
 		this.ChatService.EditingMessages.Add(new ColdShineSoft.Models.Message { Role = ColdShineSoft.Models.MessageRole.User});
 		this.DropContainer.Refresh();
+	}
+
+	protected override void OnInitialized()
+	{
+		if (this.ChatService.User == null)
+			this.ChatService.User = this.LoginService.LoginUser?.UserName;
+		base.OnInitialized();
 	}
 }

@@ -2,6 +2,7 @@
 
 @inject ColdShineSoft.Services.FineTunesService FineTunesService;
 @inject ColdShineSoft.Services.FilesService FilesService;
+@inject ColdShineSoft.Services.LoginService LoginService;
 
 <PageTitle>Fine-tunes</PageTitle>
 
@@ -119,5 +120,12 @@
 			this.Loading = false;
 			this.StateHasChanged();
 		}
+	}
+
+	protected override void OnInitialized()
+	{
+		if (this.FineTunesService.CompletionsService.User == null)
+			this.FineTunesService.CompletionsService.User = this.LoginService.LoginUser?.UserName;
+		base.OnInitialized();
 	}
 }
