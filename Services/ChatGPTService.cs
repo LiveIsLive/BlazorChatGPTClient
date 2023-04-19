@@ -8,6 +8,17 @@ namespace ColdShineSoft.Services
 {
 	public class ChatGPTService : BaseService
 	{
+		private static Models.MessageRole[] _ChatRoles = null!;
+		public Models.MessageRole[] ChatRoles
+		{
+			get
+			{
+				if (_ChatRoles == null)
+					_ChatRoles = new Models.MessageRole[] { Models.MessageRole.System, Models.MessageRole.Assistant, Models.MessageRole.User };
+				return _ChatRoles;
+			}
+		}
+
 		public System.Collections.ObjectModel.ObservableCollection<Models.Message> Messages { get; } = new();
 
 		private System.Collections.ObjectModel.ObservableCollection<Models.Message> _EditingMessages = null!;

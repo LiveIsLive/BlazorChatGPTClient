@@ -1,4 +1,3 @@
-using ColdShineSoft.BlazorChatGPTClient.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
@@ -46,6 +45,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<OpenAI.GPT3.Managers.OpenAIService>(new OpenAI.GPT3.Managers.OpenAIService(new OpenAI.GPT3.OpenAiOptions
 {
 	ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"],
+	Organization = builder.Configuration["OpenAIServiceOptions:Organization"],
 	DefaultModelId = builder.Configuration["OpenAIServiceOptions:DefaultModelId"]
 }));
 
