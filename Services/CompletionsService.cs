@@ -81,7 +81,7 @@ namespace ColdShineSoft.Services
 					return false;
 				}
 				foreach (OpenAI.GPT3.ObjectModels.SharedModels.ChoiceResponse choice in completionResult.Choices)
-					this.Messages.Add(new Models.Message(Models.MessageRole.User, choice.Text));
+					this.Messages.Add(new Models.Message(Models.MessageRole.Server, choice.Text));
 				return true;
 			}
 			else

@@ -42,7 +42,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 //builder.Services.AddOpenAIService(settings => settings.ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"]);
-builder.Services.AddSingleton<OpenAI.GPT3.Managers.OpenAIService>(new OpenAI.GPT3.Managers.OpenAIService(new OpenAI.GPT3.OpenAiOptions
+builder.Services.AddTransient<OpenAI.GPT3.Managers.OpenAIService>(provider => new OpenAI.GPT3.Managers.OpenAIService(new OpenAI.GPT3.OpenAiOptions
 {
 	ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"],
 	Organization = builder.Configuration["OpenAIServiceOptions:Organization"],
