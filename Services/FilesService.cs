@@ -17,7 +17,7 @@ namespace ColdShineSoft.Services
 
 		public System.IO.Stream FileStream { get; set; } = null!;
 
-		public List<OpenAI.GPT3.ObjectModels.SharedModels.FileResponse> UploadedFiles { get; protected set; } = null!;
+		public List<OpenAI.GPT3.ObjectModels.SharedModels.FileResponse> UploadedFiles { get; protected set; } = new();
 
 		public FilesService(OpenAI.GPT3.Managers.OpenAIService openAIService) : base(openAIService)
 		{

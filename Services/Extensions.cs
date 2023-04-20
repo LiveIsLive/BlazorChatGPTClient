@@ -17,9 +17,9 @@ namespace ColdShineSoft.Services
 				if (type.IsAbstract)
 					continue;
 				if(baseType.IsAssignableFrom(type))
-					services.AddScoped(type);
+					services.AddTransient(type);
 			}
-			services.AddScoped<UserService>();
+			services.AddTransient<UserService>();
 			services.AddScoped<LoginService>();
 			return services;
 		}
