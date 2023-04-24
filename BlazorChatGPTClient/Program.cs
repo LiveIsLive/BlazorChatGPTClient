@@ -42,6 +42,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 //builder.Services.AddOpenAIService(settings => settings.ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"]);
+//var cookieContainer = new System.Net.CookieContainer();
+//var handler = new HttpClientHandler { CookieContainer = cookieContainer, UseCookies = true };
+//HttpClient httpClient = new(handler);
 builder.Services.AddTransient<OpenAI.GPT3.Managers.OpenAIService>(provider => new OpenAI.GPT3.Managers.OpenAIService(new OpenAI.GPT3.OpenAiOptions
 {
 	ApiKey = builder.Configuration["OpenAIServiceOptions:ApiKey"],

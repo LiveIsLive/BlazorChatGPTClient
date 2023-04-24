@@ -64,10 +64,11 @@ namespace ColdShineSoft.Services
 		{
 		}
 
-		public async Task<bool> Send(System.Collections.Generic.IEnumerable<Models.Message> messages)
+		public async Task<bool> Send(System.Collections.Generic.IEnumerable<Models.Message> messages, bool addToHistory = true)
 		{
-			foreach (Models.Message m in messages)
-				this.Messages.Add(m);
+			if(addToHistory)
+				foreach (Models.Message m in messages)
+					this.Messages.Add(m);
 
 			var completionResult = await this.OpenAIService.ChatCompletion.CreateCompletion(new OpenAI.GPT3.ObjectModels.RequestModels.ChatCompletionCreateRequest
 			{
@@ -102,9 +103,9 @@ namespace ColdShineSoft.Services
 			}
 		}
 
-		public virtual async Task<bool> Send()
+		public virtual async Task<bool> Send(bool addToHistory = true)
 		{
-			if(await this.Send(this.EditingMessages))
+			if(await this.Send(this.EditingMessages, addToHistory))
 			{
 				this.EditingMessages = new(this.EditingMessages.Select(m => new Models.Message { Role = m.Role }));
 				return true;
