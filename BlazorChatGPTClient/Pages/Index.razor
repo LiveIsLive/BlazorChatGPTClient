@@ -23,8 +23,11 @@
 			<MudProgressLinear Indeterminate="@Loading" />
 			<EditForm Model="@ChatService.EditingMessage" Class="d-flex mb-2" OnValidSubmit="Send">
 				<DataAnnotationsValidator />
-				<MudTextField @bind-Value="ChatService.EditingMessage.Content" Class="flex-1 ml-2" For="@(()=>ChatService.EditingMessage.Content)" Disabled="@Loading" />
-				<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+				<MudTextField @bind-Value="ChatService.EditingMessage.Content" Class="flex-1 ml-2" For="@(()=>ChatService.EditingMessage.Content)" Lines="Multiline?5:1" Disabled="@Loading" />
+				<MudStack Row="!Multiline" AlignItems="AlignItems.Center" Justify="Justify.Center" Reverse="Multiline">
+					<MudCheckBox @bind-Checked="Multiline">多行</MudCheckBox>
+					<MudIconButton ButtonType="ButtonType.Submit" Color="Color.Primary" Icon="@Icons.Material.Filled.Send" Disabled="@Loading" />
+				</MudStack>
 			</EditForm>
 		</div>
 	</Body>
@@ -33,6 +36,7 @@
 @code
 {
 	bool Loading;
+	bool Multiline;
 
 	public async Task<bool> Send()
 	{

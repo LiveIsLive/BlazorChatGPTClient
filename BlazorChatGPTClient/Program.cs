@@ -95,11 +95,11 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-#region BLAZOR COOKIE Auth
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseCookiePolicy();
-app.UseAuthentication();
-#endregion
+//#region BLAZOR COOKIE Auth
+//app.UseHttpsRedirection();
+//app.UseStaticFiles();
+//app.UseCookiePolicy();
+//app.UseAuthentication();
+//#endregion
 
 app.Run();
